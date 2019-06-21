@@ -1,6 +1,7 @@
 /*
-	Enigma Encrypting Machine Simulator
-	Creative Commons Marcin Borkowicz 2019
+	Jenigma Project
+	The famous Enigma encrypting machine simulator.
+	Marcin Borkowicz 2019
 */
 
 /*function Rotor(number, initialSetting) {
