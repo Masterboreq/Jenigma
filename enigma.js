@@ -11,8 +11,8 @@
 	this.prototype.currentState = 0; //aktualna pozycja bębna
 	
 };*/
-var Letters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
-],
+var Letters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],
+
 Rotors = {
 	types: {
 		1: {
@@ -24,81 +24,63 @@ Rotors = {
 		},
 		2: {
 			name: "II",
-			rightContacts: [
-			],
-			leftContacts: [
-			],
+			rightContacts: [0,9,3,10,18,8,17,20,23,1,11,7,22,19,12,2,16,6,25,13,15,24,5,21,14,4],
+			leftContacts: [0,9,15,2,25,22,17,11,5,1,3,10,14,19,24,20,16,6,4,13,7,23,12,8,21,18],
 			notchAt: [15],
 			isMoveable: true			
 		},
 		3: {
 			name: "III",
-			rightContacts: [
-			],
-			leftContacts: [
-			],
+			rightContacts: [1,3,5,7,9,11,2,15,17,19,23,21,25,13,24,4,8,22,6,0,10,12,20,18,16,14],
+			leftContacts: [19,0,6,1,15,2,18,3,16,4,20,5,21,13,25,7,24,8,23,9,22,11,17,10,14,12],
 			notchAt: [15],
 			isMoveable: true	
 		},
 		4: {
 			name: "IV",
-			rightContacts: [
-			],
-			leftContacts: [
-			],
+			rightContacts: [4,18,14,21,15,25,9,0,24,16,20,8,17,7,23,11,13,5,19,6,10,3,2,12,22,1],
+			leftContacts: [7,25,22,21,0,17,19,13,11,6,20,15,23,16,2,4,9,12,1,18,10,3,24,14,8,5],
 			notchAt: [15],
 			isMoveable: true	
 		},
 		5: {
 			name: "V",
-			rightContacts: [
-			],
-			leftContacts: [
-			],
+			rightContacts: [21,25,1,17,6,8,19,24,20,15,18,3,13,7,11,23,0,22,12,9,16,14,5,4,2,10],
+			leftContacts: [16,2,24,11,23,22,4,13,5,19,25,14,18,12,21,9,20,3,10,6,8,0,17,15,7,1],
 			notchAt: [15],
 			isMoveable: true	
 		},
 		6: {
 			name: "VI",
-			rightContacts: [
-			],
-			leftContacts: [
-			],
+			rightContacts: [9,15,6,21,14,20,12,5,24,16,1,4,13,7,25,17,3,10,0,18,23,11,8,2,19,22],
+			leftContacts: [18,10,23,16,11,7,2,13,22,0,17,21,6,12,4,1,9,15,19,24,5,3,25,20,8,14],
 			notchAt: [15],
 			isMoveable: true	
 		},
 		7: {
 			name: "VII",
-			rightContacts: [
-			],
-			leftContacts: [
-			],
+			rightContacts: [13,25,9,7,6,17,2,23,12,24,18,22,1,14,20,5,0,8,21,11,15,4,10,16,3,19],
+			leftContacts: [16,12,6,24,21,15,4,3,17,2,22,19,8,0,13,20,23,5,10,25,14,18,11,7,9,1],
 			notchAt: [15],
 			isMoveable: true	
 		},
 		8: {
 			name: "VIII",
-			rightContacts: [
-			],
-			leftContacts: [
-			],
+			rightContacts: [5,10,16,7,19,11,23,14,2,1,9,18,15,3,25,17,0,12,4,22,13,8,20,24,6,21],
+			leftContacts: [16,9,8,13,18,0,24,3,21,10,1,5,17,20,7,12,2,15,11,4,22,25,19,6,23,14],
 			notchAt: [15],
 			isMoveable: true	
 		},
 		9: {
 			name: "&beta;",
-			rightContacts: [
-			],
-			leftContacts: [
-			],
+			rightContacts: [11,4,24,9,21,2,13,8,23,22,15,1,16,12,3,17,19,0,10,25,6,5,20,7,14,18],
+			leftContacts: [17,11,5,14,1,21,20,23,7,3,18,0,13,6,24,10,12,15,25,16,22,4,9,8,2,19],
 			isMoveable: false	
 		},
 		10: {
 			name: "&gamma;",
-			rightContacts: [
-			],
-			leftContacts: [
-			],
+			rightContacts: [5,18,14,10,0,13,20,4,17,7,12,1,19,8,24,2,22,11,16,15,25,23,21,6,9,3],
+			leftContacts: [4,11,15,25,7,0,23,9,13,24,3,17,10,5,2,19,18,8,1,12,6,22,16,21,14,20],
 			isMoveable: false	
 		},
 		11: {
@@ -153,7 +135,6 @@ Uhr = {
 			return this.presets[iPreset].wiring;
 		}
 	}
-	return true;
 },
 
 step = function() {
@@ -235,24 +216,18 @@ code = function(iInput, bIsReflected=false) {
 		
 		Zwracana wartość to pozycja (nr styku) względem stojana.
 	*/
-		
+	//TODO: DO POPRAWY arytmetyka wyboru elementu tablicy!	
 	if(bIsReflected) {
-		//faza powrotu
-		this.output = this.leftContacts[iInput + this.currentOffset] - this.currentOffset; //to jest ciekawe!!
+		//faza powrotu 
+		this.output = this.leftContacts[iInput + this.currentOffset] - this.currentOffset; //to jest ciekawe!! (DO POPRAWY)
 	}
 	else {
 		//faza propagacji w kierunku reflektora
-		this.output = this.rightContacts[iInput + this.currentOffset] - this.currentOffset; //to jest ciekawe!!
+		this.output = this.rightContacts[iInput + this.currentOffset] - this.currentOffset; //to jest ciekawe!! (DO POPRAWY)
 	}
 	this.output = (26+this.output)%26;
-	console.log("Output: "+this.output);
+//	console.log("Output "+this.name+": "+this.output);
 	return this.output;
-},
-
-preset = function() {
-	//TODO: ZAPCHAJDZIURA DLA METODY obiektu Enigma()
-	console.log("Funkcja preset");
-	return;
 },
 
 encipher = function(iCharCode) {
@@ -312,12 +287,31 @@ rewire = function(aWiring) {
 },
 
 sendChar = function(iCharCode) {
-	return this.output = this.wiring[iCharCode];
+	this.output = this.wiring[iCharCode];
+	console.log("Reflector output: "+this.output);
+	return this.output;
 },
 
 toggleDefault = function() {
 	return this.wiring = this.defaultWiring;
 };
+
+preset = function(oRotor1, oRotor2, oRotor3, oRotor4 = new Rotor(11), oReflector, oPlugboard = 	new Plugboard) {
+	var i =3;
+	do {
+		if(arguments[i].constructor !== Rotor) {
+			//sprawdź, czy argumenty od 0 do 3 są obiektami typu Rotor
+			return true; //zgłoś błąd
+		}
+		this["rotor"+(i+1)] = arguments[i];
+	}
+	while(--i>=0);
+	if(oReflector.constructor !== Reflector || oPlugboard.constructor !== Plugboard) {
+		return true; //również w tych przypadkach zgłoś błąd
+	}
+	this.reflector = oReflector;
+	this.plugboard = oPlugboard;
+}
 
 function Plugboard() {
 	this.defaultWiring = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]; //domyślny układ braku łącznicy; żadna litera nie jest zamieniana
@@ -371,7 +365,7 @@ function Reflector(iType) {
 	//funkcja tworzy obiekt reflektora danego typu 
 	this.name = Reflectors.types[iType].name;
 	this.shortname = Reflectors.types[iType].shortname;
-	this.wiring = Rotors.types[iType].contacts; //zmienna ma taką samą nazwę jak ta w łącznicy (Plugboard), ponieważ obeikt typu Reflector i Plugboard korzystają z tej samej funkcji do komutacji sygnału - f. sendChar
+	this.wiring = Reflectors.types[iType].contacts; //zmienna ma taką samą nazwę jak ta w łącznicy (Plugboard), ponieważ obeikt typu Reflector i Plugboard korzystają z tej samej funkcji do komutacji sygnału - f. sendChar
 	
 	this.send = sendChar; //metoda do komutacji przesyłanego sygnału
 	
@@ -385,10 +379,10 @@ function Enigma() {
 		Obiekt spajający mechanikę działania maszyny.
 	*/
 	this.plugboard;
-	this.rotor1;
+	this.rotor1; //wirnik szybki
 	this.rotor2;
 	this.rotor3;
-	this.rotor4 = null;
+	this.rotor4;
 	this.reflector;
 	//this.setup = [plugboard, rotor1, rotor2, rotor3, rotor4, reflector]; //układ wirników; pierwszy element tablicy to wirnik "szybki" (pierwszy z prawej, zaraz za stojanem)
 	this.output = {
@@ -406,4 +400,29 @@ function Enigma() {
 	
 	return;
 };
+
+//start próbnego programu
+var e = new Enigma,
+	r1 = new Rotor(1),
+	r2 = new Rotor(2),
+	r3 = new Rotor(3),
+	r4 = new Rotor(11),
+	ref = new Reflector(1);
+
+r1.set(0,0);
+r2.set(0,0);
+r3.set(0,0);
+r4.set(0,0);
+	
+e.preset(r1, r2, r3, r4, ref);
+//r1.step();
+//r1.step();
+r1.step();
+inp = 24;
+console.log("Wejście r1: "+Letters[inp]);
+r1.code(inp);
+console.log("Wyjście r1: "+Letters[r1.output]);
+
+
+//console.log(e.encipher(0).charCode);
 
