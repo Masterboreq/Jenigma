@@ -19,35 +19,40 @@ Rotors = {
 			name: "I",
 			rightContacts: [4,10,12,5,11,6,3,16,22,25,13,19,14,21,24,7,23,20,18,15,0,8,1,17,2,9],
 			leftContacts: [20,22,24,6,0,3,5,15,21,25,1,4,2,10,12,19,7,23,18,11,17,13,8,16,14,9],
-			notchAt: [15], //TODO: sprawdzić, czy wartość nie powinna wynosić 16
+			/*
+				Mała uwaga do zmiennej this.notchAt: z uwagi na mechanikę działania funkcji 
+				wykonującej kroki wirników, wartość zmiennej jest zawsze o 1 MNIEJSZA względem
+				indeksu litery w okienku (określanej przez zmienną this.currentPosition), PO KROKU której o następną pozycję (literę) występuje obrot następnego wirnika. Np. dla wirnika I: (Q->R); litera w okienku tuż przed krokiem to Q[indeks 16]; w następnym kroku zmieni się na R[indeks 17], WIĘC: 16 (indeks litery Q) odjąć 1 = 15 i to jest prawidłowa wartość this.notchAt.
+			*/
+			notchAt: [15], //gdy wirnik w okienku pokazuje literę "Q".
 			isMoveable: true
 		},
 		2: {
 			name: "II",
 			rightContacts: [0,9,3,10,18,8,17,20,23,1,11,7,22,19,12,2,16,6,25,13,15,24,5,21,14,4],
 			leftContacts: [0,9,15,2,25,22,17,11,5,1,3,10,14,19,24,20,16,6,4,13,7,23,12,8,21,18],
-			notchAt: [15],
+			notchAt: [3], //E
 			isMoveable: true			
 		},
 		3: {
 			name: "III",
 			rightContacts: [1,3,5,7,9,11,2,15,17,19,23,21,25,13,24,4,8,22,6,0,10,12,20,18,16,14],
 			leftContacts: [19,0,6,1,15,2,18,3,16,4,20,5,21,13,25,7,24,8,23,9,22,11,17,10,14,12],
-			notchAt: [15],
+			notchAt: [20], //V
 			isMoveable: true	
 		},
 		4: {
 			name: "IV",
 			rightContacts: [4,18,14,21,15,25,9,0,24,16,20,8,17,7,23,11,13,5,19,6,10,3,2,12,22,1],
 			leftContacts: [7,25,22,21,0,17,19,13,11,6,20,15,23,16,2,4,9,12,1,18,10,3,24,14,8,5],
-			notchAt: [15],
+			notchAt: [8], //J
 			isMoveable: true	
 		},
 		5: {
 			name: "V",
 			rightContacts: [21,25,1,17,6,8,19,24,20,15,18,3,13,7,11,23,0,22,12,9,16,14,5,4,2,10],
 			leftContacts: [16,2,24,11,23,22,4,13,5,19,25,14,18,12,21,9,20,3,10,6,8,0,17,15,7,1],
-			notchAt: [15],
+			notchAt: [24], //Z
 			isMoveable: true	
 		},
 		6: {
@@ -154,7 +159,6 @@ step = function() {
 		this.stepNextRotor = true;
 	}
 	
-	
 	console.log("currentPosition: "+this.currentPosition+"; currentNotchOffset: "+this.currentNotchOffset+"; currentOffset: "+this.currentOffset);
 	return;
 };
@@ -196,14 +200,22 @@ set = function(iRingstellung, iLetter) {
 		/*
 			Wraz z ustawieniem wirnika i przytwierdzonego doń pierścienia alfabetycznego, znów przesuwa się wycięcie pierścienia.
 		*/
-		this.currentNotchOffset = (26 + this.currentNotchOffset - iSettingOffset)%26; //ostateczna pozycja wycięcia	
+		this.currentNotchOffset = (26 + this.currentNotchOffset - iSettingOffset)%26; //ostateczna pozycja wycięcia
+		
+		//w tym miejscu sprawdzamy, czy nie należy ustawić flagi wirnika informującej o obrocie kolejnego wirnika (porównaj z analogicznym zapisaem w f-cji step())
+		if(this.currentNotchOffset < 25) {
+			this.stepNextRotor = false;
+		}
+		else {
+			this.stepNextRotor = true;
+		}
 		
 		/*
 		Należy pamiętać, że odtąd nie obracamy już tylko pierścienia na wirniku, lecz cały wirnik, a więc i jego uzwojenie! Pozycja styku A-01 uzwojenia względem styku A-01 stojana również się zmieni o wartość tymczasowej zmiennej iSettingOffset.
 		*/
 		this.currentOffset = (26 + iSettingOffset)%26;
 	}
-	console.log("currentPosition: "+this.currentPosition+"; currentNotchOffset: "+this.currentNotchOffset+"; currentOffset: "+this.currentOffset);
+	//console.log("currentPosition: "+this.currentPosition+"; currentNotchOffset: "+this.currentNotchOffset+"; currentOffset: "+this.currentOffset);
 	return;
 },
 
@@ -219,19 +231,24 @@ code = function(iInput, bIsReflected=false) {
 	//TODO: DO POPRAWY arytmetyka wyboru elementu tablicy!	
 	if(bIsReflected) {
 		//faza powrotu 
-		this.output = this.leftContacts[iInput + this.currentOffset] - this.currentOffset; //to jest ciekawe!! (DO POPRAWY)
+		this.output = this.leftContacts[(iInput + this.currentOffset)%26] - this.currentOffset; //to jest ciekawe!! (DO SPRAWDZENIA - POWINNO DZIAŁAĆ POPRAWNIE)
 	}
 	else {
 		//faza propagacji w kierunku reflektora
-		this.output = this.rightContacts[iInput + this.currentOffset] - this.currentOffset; //to jest ciekawe!! (DO POPRAWY)
+		this.output = this.rightContacts[(iInput + this.currentOffset)%26] - this.currentOffset; //to jest ciekawe!! (DO SPRAWDZENIA - POWINNO DZIAŁAĆ POPRAWNIE)
 	}
 	this.output = (26+this.output)%26;
 //	console.log("Output "+this.name+": "+this.output);
 	return this.output;
 },
 
+getCurrentPosition = function() {
+	return Letters[this.currentPosition];
+}
+
 encipher = function(iCharCode) {
-	//console.log("Funkcja encipher");
+	//DEBUGGER
+	console.log("Wejście Enigmy: "+Letters[inp]);
 
 	// ### etap ustawiania (obrotu) wirników
 	if(this.rotor1.stepNextRotor == true) {
@@ -275,6 +292,11 @@ encipher = function(iCharCode) {
 	
 	this.output.charCode = this.rotor1.output;
 	this.output.charName = Letters[this.rotor1.output];
+	
+	//DEBUGGER
+	console.log("Wyjście Enigmy: "+e.output.charName);
+	console.log("Litera w okienkach IV: "+r4.getCurrentPosition()+", III: "+r3.getCurrentPosition()+", II: "+r2.getCurrentPosition()+", I: "+r1.getCurrentPosition());
+	
 	return this.output;
 },
 
@@ -288,7 +310,7 @@ rewire = function(aWiring) {
 
 sendChar = function(iCharCode) {
 	this.output = this.wiring[iCharCode];
-	console.log("Reflector output: "+this.output);
+	//console.log("Reflector output: "+this.output);
 	return this.output;
 },
 
@@ -357,6 +379,7 @@ function Rotor(iType) {
 	this.step = step; //przypisanie funkcji z globalnego zasięgu jako metody obiektu
 	this.set = set; //przypisanie funkcji z globalnego zasięgu jako metody obiektu
 	this.code = code; //funkcja odpowiadająca za substytucję znaków, czyli transkodowanie sygnału przez wirnik.
+	this.getCurrentPosition = getCurrentPosition; //zwraca aktualną literę w okienka wirnika. Metoda konwertuje this.currentPosition na literę z tablicy globalnej Letters.
 	
 	return;
 };
@@ -409,7 +432,7 @@ var e = new Enigma,
 	r4 = new Rotor(11),
 	ref = new Reflector(1);
 
-r1.set(0,0);
+r1.set(0,15);
 r2.set(0,0);
 r3.set(0,0);
 r4.set(0,0);
@@ -420,11 +443,5 @@ r3.step();
 r3.step();
 r3.step();
 r3.step();*/
-inp = 5;
-console.log("Wejście Enigmy: "+Letters[inp]);
+inp = 0;
 e.encipher(inp);
-console.log("Wyjście Enigmy: "+e.output.charName);
-
-
-//console.log(e.encipher(0).charCode);
-
