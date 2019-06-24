@@ -415,13 +415,15 @@ r3.set(0,0);
 r4.set(0,0);
 	
 e.preset(r1, r2, r3, r4, ref);
-//r1.step();
-//r1.step();
-r1.step();
-inp = 24;
-console.log("Wejście r1: "+Letters[inp]);
-r1.code(inp);
-console.log("Wyjście r1: "+Letters[r1.output]);
+/*r3.step();
+r3.step();
+r3.step();
+r3.step();
+r3.step();*/
+inp = 5;
+console.log("Wejście Enigmy: "+Letters[inp]);
+e.encipher(inp);
+console.log("Wyjście Enigmy: "+e.output.charName);
 
 
 //console.log(e.encipher(0).charCode);
