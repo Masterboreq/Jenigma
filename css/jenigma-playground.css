@@ -90,19 +90,31 @@ ul {
 	overflow: hidden;
 }
 
-#contacts-fast-right {
+#contacts-to-fast {
 	left: 816px;
 }
 
-#contacts-middle-right {
+#contacts-to-middle {
 	left: 616px;
 }
 
-#contacts-slow-right {
+#contacts-to-slow {
 	left: 416px;
 }
 
-#contacts-reflector-right {
+}#contacts-fast-right {
+	
+}
+
+#contacts-middle-right {
+	
+}
+
+#contacts-slow-right {
+	
+}
+
+#contacts-to-reflector {
 	left: 216px;
 }
  
