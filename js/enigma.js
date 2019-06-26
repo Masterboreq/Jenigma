@@ -1,7 +1,10 @@
 /*
-	Jenigma Project
-	The famous Enigma encrypting machine simulator.
-	Marcin Borkowicz 2019
+	js/enigma.js
+	Author: Marcin Borkowicz 2019
+	Package: Jenigma Project
+	Desc: The famous Enigma encrypting machine simulator.
+	Codebase: github.com/Masterboreq/jenigma
+	TODO: Website: boreq.com/jenigma
 */
 
 /*function Rotor(number, initialSetting) {
