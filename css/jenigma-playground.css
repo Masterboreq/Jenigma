@@ -4,6 +4,10 @@
 	padding: 0%;
 	margin: 0%;
 }
+ul {
+	list-style-type: none;
+}
+
 .window {
 	position: absolute;
 	top: 150px;
@@ -13,18 +17,48 @@
 }
 
 #window-r1 {
+	left: 654px;
+}
+
+#window-r2 {
 	left: 454px;
 
 }
+
+#window-r3 {
+	left: 254px;
+
+}
+
+#fast {
+	left: 650px;
+}
+
+#middle {
+	left: 450px;
+}
+
+#slow {
+	left: 250px;
+}
+ 
 .rotor {
 	border: 2px solid red;
 	width: 160px;
 	height: 306px;
 	position: absolute;
 	top: 20px;
-	left: 450px;
 	overflow: hidden;
-	z-index
+}
+
+.wide-reflector {
+	border: 2px solid green;
+	left: 50px;
+}
+
+.stator {
+	border: 2px solid orange;
+	left: 850px;
 }
  
 .letter-strip {
@@ -36,13 +70,47 @@
 	left: 4px;
 	overflow: hidden;
 }
+
+.contacts {
+	position: relative;
+	/*top: 0px;
+	left: 5px; */
+	font-size: 11px;
+	line-height: 0.75rem;
+	color: #555;
+	text-align: center;
+}
+
+.contacts-strip {
+	border: 1px solid #555;
+	width: 30px;
+	height: 310px;
+	position: absolute;
+	top: 18px;
+	overflow: hidden;
+}
+
+#contacts-fast-right {
+	left: 816px;
+}
+
+#contacts-middle-right {
+	left: 616px;
+}
+
+#contacts-slow-right {
+	left: 416px;
+}
+
+#contacts-reflector-right {
+	left: 216px;
+}
  
 ul.indexes {
-	 list-style-type: none;
-	 position: relative;
-	 font-size: 36px;
-	 top: 0px;
-	 left: 5px;
+	position: relative;
+	font-size: 36px;
+	top: 0px;
+	left: 5px;
 }
 
 ul.indexes li {
@@ -77,12 +145,65 @@ ul.indexes li {
 	width: 40px;
 	height: 26px;
 	margin: 1px 4px;
-	font-size: 24px;
+	font-size: 28px;
 }
 
 .letter-offset-4 {
 	width: 38px;
 	height: 18px;
 	margin: 1px 5px;
-	font-size: 18px;
+	font-size: 24px;
+}
+
+.descended-1 {
+	line-height: 1.2em;
+}
+
+.descended-2 {
+	line-height: 1.3em;
+}
+
+.descended-3 {
+	line-height: 1.38em;
+}
+
+.ascended-1 {
+	line-height: 0.85em;
+}
+
+.ascended-2 {
+	line-height: 0.65em;
+}
+
+.ascended-3 {
+	line-height: 0.38em;
+}
+
+.lamps-panel {
+	border: 1px dashed blue;
+	width: 960px;
+	position: absolute;
+	top: 340px;
+	left: 50px;
+}
+
+.lamps-row {
+	border: 1px dashed #999;
+	width: 70%;
+	margin: 5px auto;
+}
+
+.lamps-row ul li {
+	display: inline-block;
+	width: 45px;
+	height: 30px;
+	margin-left: 20px;
+	border-radius: 100%;
+	border: 1px solid yellow;
+	text-align: center;
+	padding-top: 15px;
+}
+
+#middle-row {
+	width: 60%;
 }
