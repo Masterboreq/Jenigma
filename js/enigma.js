@@ -162,7 +162,7 @@ step = function() {
 		this.stepNextRotor = true;
 	}
 	
-	console.log("currentPosition: "+this.currentPosition+"; currentNotchOffset: "+this.currentNotchOffset+"; currentOffset: "+this.currentOffset);
+	//console.log("currentPosition: "+this.currentPosition+"; currentNotchOffset: "+this.currentNotchOffset+"; currentOffset: "+this.currentOffset);
 	return;
 };
 
@@ -250,9 +250,6 @@ getCurrentPosition = function() {
 }
 
 encipher = function(iCharCode) {
-	//DEBUGGER
-	console.log("Wejście Enigmy: "+Letters[inp]);
-
 	// ### etap ustawiania (obrotu) wirników
 	if(this.rotor1.stepNextRotor == true) {
 		if(this.rotor2.stepNextRotor == true) {
@@ -279,8 +276,22 @@ encipher = function(iCharCode) {
 	
 	// ### faza propagacji sygnału ###
 	this.plugboard.send(iCharCode); // (1)
+		//console.log("Wyjście łącznicy: "+Letters[this.plugboard.output]);
+		hightlightLetterStrips(oContactStrips[0], this.plugboard.output, bDirection=0);
 	this.rotor1.code(this.plugboard.output, false); //(2)
+		//console.log("Wyjście wirnika1: "+Letters[this.rotor1.output]);
+		//TU SKOŃCZYŁEŚ > TODO: na wyjściu wirnika1 jest zły wynik. P-podobnie coś nie tak w f-cji code();
+		stepContactsPositionOnRotor(this.rotor1);
+		stepRingPositionOnRotor(this.rotor1);
+		hightlightLetterStrips(this.rotor1.guiContactsRight, this.plugboard.output, 0);
+		hightlightLetterStrips(this.rotor1.guiContactsLeft, this.rotor1.output, 0);
+		hightlightLetterStrips(oContactStrips[1], this.rotor1.output, bDirection=0);
 	this.rotor2.code(this.rotor1.output, false); //(3)
+		//stepContactsPositionOnRotor(this.rotor2);
+		//stepRingPositionOnRotor(this.rotor2);
+		hightlightLetterStrips(this.rotor2.guiContactsRight, this.rotor1.output, 0);
+		hightlightLetterStrips(this.rotor2.guiContactsLeft, this.rotor2.output, 0);
+		hightlightLetterStrips(oContactStrips[2], this.rotor2.output, bDirection=0);
 	this.rotor3.code(this.rotor2.output, false); //(4)
 	this.rotor4.code(this.rotor3.output, false); //(5)
 	
@@ -292,13 +303,14 @@ encipher = function(iCharCode) {
 	this.rotor3.code(this.rotor4.output, true); //(8)
 	this.rotor2.code(this.rotor3.output, true); //(9)
 	this.rotor1.code(this.rotor2.output, true); //(10)
+	this.plugboard.send(this.rotor1.output);
 	
-	this.output.charCode = this.rotor1.output;
-	this.output.charName = Letters[this.rotor1.output];
+	this.output.charCode = this.plugboard.output;
+	this.output.charName = Letters[this.plugboard.output];
 	
 	//DEBUGGER
-	console.log("Wyjście Enigmy: "+e.output.charName);
-	console.log("Litera w okienkach IV: "+r4.getCurrentPosition()+", III: "+r3.getCurrentPosition()+", II: "+r2.getCurrentPosition()+", I: "+r1.getCurrentPosition());
+	//console.log("Wyjście Enigmy: "+e.output.charName);
+	//console.log("Litera w okienkach IV: "+r4.getCurrentPosition()+", III: "+r3.getCurrentPosition()+", II: "+r2.getCurrentPosition()+", I: "+r1.getCurrentPosition());
 	
 	return this.output;
 },
@@ -352,13 +364,23 @@ function Plugboard() {
 	return;
 };
 
-function Rotor(iType) {
+function Rotor(iType,sRotorDomId="fourth") {
 	//funkcja tworzy obiekt wirnika danego typu 
 	this.name = Rotors.types[iType].name;
+	
+	//przypisany element DOM o danym id w GUI aplikacji (np. div o id="forth").
+	this.guiElement = document.getElementById(sRotorDomId);
+	
+	//paski kontaktów w GUI: prawy i lewy
+	this.guiContactsRight = this.guiElement.children[0];
+	this.guiContactsLeft = this.guiElement.children[1];
+	
+	//pierścień literowy w GUI
+	this.guiRing = this.guiElement.getElementsByClassName("indexes")[0];
 	/* 
 		### Rozkład kontaktów (połączeń)
 		Numer elementu tablicy to numer kontaktu po każdej ze stron wirnika danego typu.
-		W prawdziwej Enigmie kontakty są ponumerowane od 1 do 26, ale ze względu na specyfikę JS, elementy tablicy liczone są od zera, więc pierwszys kontakt ma "adres" zero, a ostatni 25. Natomiast liczba całkowita w danym elemencie tablicy oznacza numer koresponującego styku po drugiej stronie bębna z zachowaniem tego samego sposobu wyliczania styków: np. A<->K to [0=>4] (notacja elementu tablicy jak z PHP; tylko dla potrzeb przykładu).
+		W prawdziwej Enigmie kontakty są ponumerowane od 1 do 26, ale ze względu na specyfikę JS, elementy tablicy liczone są od zera, więc pierwszy kontakt ma "adres" zero, a ostatni 25. Natomiast liczba całkowita w danym elemencie tablicy oznacza numer koresponującego styku po drugiej stronie bębna z zachowaniem tego samego sposobu wyliczania styków: np. A<->K to [0=>4] (notacja elementu tablicy jak z PHP; tylko dla potrzeb przykładu).
 	*/
 	this.rightContacts = Rotors.types[iType].rightContacts; //26-elementowa tablica wskazująca na numer odpowiadającego każdemu ze styków po prawej stronie wirnika (wchodzących) stykowi po stronie lewej (wychodzącej)
 	this.leftContacts = Rotors.types[iType].leftContacts; //26-elementowa tablica wskazująca na numer odpowiadającego każdemu ze styków po lewej (wychodzącej) stronie wirnika stykowi po stronie prawej (wchodzącej). Ma to znaczenie dla fazy powrotu sygnału po wcześniejszym jego zawróceniu przez reflektor.
@@ -383,6 +405,12 @@ function Rotor(iType) {
 	this.set = set; //przypisanie funkcji z globalnego zasięgu jako metody obiektu
 	this.code = code; //funkcja odpowiadająca za substytucję znaków, czyli transkodowanie sygnału przez wirnik.
 	this.getCurrentPosition = getCurrentPosition; //zwraca aktualną literę w okienka wirnika. Metoda konwertuje this.currentPosition na literę z tablicy globalnej Letters.
+	this.toString = function() {
+		//TODO: zrewidować!
+		var dltr = ";\n";
+		console.log("Wirnik " + this.name + dltr + "Pozycja: "+this.getCurrentPosition() + dltr +"currentOffset: " + Letters[this.currentOffset] + dltr + "currentNotchOffset: " + this.currentNotchOffset + dltr + "Styk wyjściowy: "+ Letters[this.output]);
+		return false;
+	}
 	
 	return;
 };
@@ -428,7 +456,7 @@ function Enigma() {
 };
 
 //start próbnego programu
-var e = new Enigma,
+/*var e = new Enigma,
 	r1 = new Rotor(1),
 	r2 = new Rotor(2),
 	r3 = new Rotor(3),
@@ -441,10 +469,11 @@ r3.set(0,0);
 r4.set(0,0);
 	
 e.preset(r1, r2, r3, r4, ref);
-/*r3.step();
 r3.step();
 r3.step();
 r3.step();
-r3.step();*/
+r3.step();
+r3.step();
 inp = 0;
 e.encipher(inp);
+*/

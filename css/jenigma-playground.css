@@ -4,6 +4,12 @@
 	padding: 0%;
 	margin: 0%;
 }
+
+body {
+	background-color: #274242;
+	font-family: Verdana, Helvetica, Arial, sans-serif;
+}
+
 ul {
 	list-style-type: none;
 }
@@ -13,20 +19,20 @@ ul {
 	top: 150px;
 	width: 56px;
 	height: 46px;
-	border: 2px dashed blue;
+	border: 2px solid #ff26d0;
 }
 
 #window-r1 {
-	left: 654px;
+	left: 664px;
 }
 
 #window-r2 {
-	left: 454px;
+	left: 464px;
 
 }
 
 #window-r3 {
-	left: 254px;
+	left: 264px;
 
 }
 
@@ -63,22 +69,34 @@ ul {
  
 .letter-strip {
 	border: 1px solid pink;
-	width: 55px;
-	height: 306px;
+	width: 50px;
+	height: 316px;
 	position: relative;
 	top: 0px;
-	left: 4px;
+	left: 16px;
 	overflow: hidden;
 }
 
 .contacts {
 	position: relative;
-	/*top: 0px;
-	left: 5px; */
-	font-size: 11px;
+	font-size: 9px;
 	line-height: 0.75rem;
-	color: #555;
+	color: #ccc;
 	text-align: center;
+}
+
+.contacts-on-rotor, .contacts-on-rotor-right-side {
+	width: 20px;
+	position: absolute;
+	font-size: 9px;
+	line-height: 0.75rem;
+	color: #ccc;
+	text-align: center;
+}
+
+.contacts-on-rotor-right-side {
+	position: relative;
+	float: right;
 }
 
 .contacts-strip {
@@ -86,7 +104,7 @@ ul {
 	width: 30px;
 	height: 310px;
 	position: absolute;
-	top: 18px;
+	top: 20px;
 	overflow: hidden;
 }
 
@@ -117,16 +135,33 @@ ul {
 #contacts-to-reflector {
 	left: 216px;
 }
+
+li[lit="no"] {
+	color: #ccc;
+	font-weight: normal;
+}
+
+li[lit="red"] {
+	color: red;
+	font-weight: bold;
+}
+
+li[lit="green"] {
+	color: green;
+	font-weight: bold;
+}
  
 ul.indexes {
 	position: relative;
+	font-family: Georgia, "Times New Roman", serif;
 	font-size: 36px;
 	top: 0px;
-	left: 5px;
+	left: 0px;
 }
 
 ul.indexes li {
 	border: 1px solid green;
+	background-color: #fdf483;
 	display: list-item;
 	text-align: center;
 	overflow: hidden;
@@ -197,6 +232,7 @@ ul.indexes li {
 	position: absolute;
 	top: 340px;
 	left: 50px;
+	font-family: Georgia, "Times New Roman", serif;
 }
 
 .lamps-row {
@@ -208,14 +244,17 @@ ul.indexes li {
 .lamps-row ul li {
 	display: inline-block;
 	width: 45px;
-	height: 30px;
+	height: 39px;
 	margin-left: 20px;
 	border-radius: 100%;
-	border: 1px solid yellow;
+	border: 2px solid #fff;
+	color: #fff;
+	background-color: #000;
+	font-size: 30px;
 	text-align: center;
-	padding-top: 15px;
+	padding-top: 6px;
 }
 
 #middle-row {
-	width: 60%;
+	width: 62%;
 }
