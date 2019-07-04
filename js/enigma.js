@@ -251,6 +251,8 @@ getCurrentPosition = function() {
 
 encipher = function(iCharCode) {
 	// ### etap ustawiania (obrotu) wirników
+	
+	//TODO: wpasować tu wywołanie metod stepContactsPositionOnRotor()
 	if(this.rotor1.stepNextRotor == true) {
 		if(this.rotor2.stepNextRotor == true) {
 			this.rotor3.step();
@@ -280,7 +282,12 @@ encipher = function(iCharCode) {
 		hightlightLetterStrips(oContactStrips[0], this.plugboard.output, bDirection=0);
 	this.rotor1.code(this.plugboard.output, false); //(2)
 		//console.log("Wyjście wirnika1: "+Letters[this.rotor1.output]);
+<<<<<<< Updated upstream
 		//TU SKOŃCZYŁEŚ > TODO: na wyjściu wirnika1 jest zły wynik. P-podobnie coś nie tak w f-cji code();
+=======
+		/* Wycięte w gałęzi Experimental
+		*/
+>>>>>>> Stashed changes
 		stepContactsPositionOnRotor(this.rotor1);
 		stepRingPositionOnRotor(this.rotor1);
 		hightlightLetterStrips(this.rotor1.guiContactsRight, this.plugboard.output, 0);
@@ -432,23 +439,29 @@ function Enigma() {
 	/*
 		Obiekt spajający mechanikę działania maszyny.
 	*/
-	this.plugboard;
+	
+	//części składowe (wirniki, reflektor, etc.)
+	this.plugboard = null; //ustawienia łącznicy sygnałowej (Steckerbrett) lub przystawki Uhr
 	this.rotor1; //wirnik szybki
 	this.rotor2;
 	this.rotor3;
 	this.rotor4;
-	this.reflector;
-	//this.setup = [plugboard, rotor1, rotor2, rotor3, rotor4, reflector]; //układ wirników; pierwszy element tablicy to wirnik "szybki" (pierwszy z prawej, zaraz za stojanem)
+	this.reflector = null; //który reflektor jest zamontowany
+	
 	this.output = {
 						charCode: 0, //kod styku na wejściu panelu lampek
 						charName: "" //litera na wejściu panelu lampek
 					};
-	this.reflector = null; //który reflektor jest zamontowany
-	this.plugboard = null; //ustawienia łącznicy sygnałowej (Steckerbrett) lub przystawki Uhr
 	
+	// Metody maszyny
 	this.preset = preset; //funkcja ładująca konfigurację danej maszyny (np. Enigma M3, Norenigma, itp.)
 	this.encipher = encipher //funkcja przeprowadzająca kompletne szyfrowanie
 	
+	// Flagi stanu maszyny
+	//TOCONS
+	
+	
+	// Inne właściwości
 	this.presetName = "Generic Enigma";
 	this.manufacturer = ""; //easter egg
 	

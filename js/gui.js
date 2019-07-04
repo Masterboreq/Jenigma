@@ -145,6 +145,15 @@ handleActions = function(oEvent) {
 				action = translateKeyCodetoContactNumbers(action);
 				//wywołaj działanie Enigmy
 				oEnigma.encipher(action);
+<<<<<<< Updated upstream
+=======
+				//TYLKO GAŁĄŹ EXPERIMENTAL! Przeniesienie sterowania widokiem (GUI) do gui.js - eksperymentalnie.
+				/*stepContactsPositionOnRotor(oEnigma.rotor1);
+				stepRingPositionOnRotor(oEnigma.rotor1);
+				hightlightLetterStrips(oEnigma.rotor1.guiContactsRight, oEnigma.plugboard.output, 0);
+				hightlightLetterStrips(oEnigma.rotor1.guiContactsLeft, oEnigma.rotor1.output, 0);
+				hightlightLetterStrips(oContactStrips[1], oEnigma.rotor1.output, bDirection=0);*/
+>>>>>>> Stashed changes
 			}
 			else {
 				//obsługa klawiszy kierunkowych i specjalnych (Return, Esc)
