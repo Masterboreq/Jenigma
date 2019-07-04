@@ -282,12 +282,6 @@ encipher = function(iCharCode) {
 		hightlightLetterStrips(oContactStrips[0], this.plugboard.output, bDirection=0);
 	this.rotor1.code(this.plugboard.output, false); //(2)
 		//console.log("Wyjście wirnika1: "+Letters[this.rotor1.output]);
-<<<<<<< Updated upstream
-		//TU SKOŃCZYŁEŚ > TODO: na wyjściu wirnika1 jest zły wynik. P-podobnie coś nie tak w f-cji code();
-=======
-		/* Wycięte w gałęzi Experimental
-		*/
->>>>>>> Stashed changes
 		stepContactsPositionOnRotor(this.rotor1);
 		stepRingPositionOnRotor(this.rotor1);
 		hightlightLetterStrips(this.rotor1.guiContactsRight, this.plugboard.output, 0);
