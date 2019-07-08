@@ -256,11 +256,16 @@ encipher = function(iCharCode) {
 	if(this.rotor1.stepNextRotor == true) {
 		if(this.rotor2.stepNextRotor == true) {
 			this.rotor3.step();
+			stepContactsPositionOnRotor(this.rotor3);
+			stepRingPositionOnRotor(this.rotor3);
 		}
 		this.rotor2.step();
+		stepContactsPositionOnRotor(this.rotor2);
+		stepRingPositionOnRotor(this.rotor2);
 	}
 	this.rotor1.step(); //wirnik 1 kroczy przy każdorazowym naciśnięciu dowolnej litery
-	
+	stepContactsPositionOnRotor(this.rotor1);
+	stepRingPositionOnRotor(this.rotor1);
 	/*
 	Przepływ sygnału:
 		(1) Klawiatura (iCharCode) -> 
@@ -282,22 +287,22 @@ encipher = function(iCharCode) {
 		hightlightLetterStrips(oContactStrips[0], this.plugboard.output, bDirection=0);
 	this.rotor1.code(this.plugboard.output, false); //(2)
 		//console.log("Wyjście wirnika1: "+Letters[this.rotor1.output]);
-		stepContactsPositionOnRotor(this.rotor1);
-		stepRingPositionOnRotor(this.rotor1);
 		hightlightLetterStrips(this.rotor1.guiContactsRight, this.plugboard.output, 0);
 		hightlightLetterStrips(this.rotor1.guiContactsLeft, this.rotor1.output, 0);
 		hightlightLetterStrips(oContactStrips[1], this.rotor1.output, bDirection=0);
 	this.rotor2.code(this.rotor1.output, false); //(3)
-		//stepContactsPositionOnRotor(this.rotor2);
-		//stepRingPositionOnRotor(this.rotor2);
 		hightlightLetterStrips(this.rotor2.guiContactsRight, this.rotor1.output, 0);
 		hightlightLetterStrips(this.rotor2.guiContactsLeft, this.rotor2.output, 0);
 		hightlightLetterStrips(oContactStrips[2], this.rotor2.output, bDirection=0);
 	this.rotor3.code(this.rotor2.output, false); //(4)
+		hightlightLetterStrips(this.rotor3.guiContactsRight, this.rotor1.output, 0);
+		hightlightLetterStrips(this.rotor3.guiContactsLeft, this.rotor2.output, 0);
+		hightlightLetterStrips(oContactStrips[3], this.rotor2.output, bDirection=0);
 	this.rotor4.code(this.rotor3.output, false); //(5)
 	
 	// ### nawrót sygnału przez reflektor ###
 	this.reflector.send(this.rotor4.output); //(6)
+		hightlightLetterStrips(oContactStrips[3], this.rotor2.output, bDirection=1);
 	
 	// ### faza powrotu sygnału ###
 	this.rotor4.code(this.reflector.output, true); //(7)

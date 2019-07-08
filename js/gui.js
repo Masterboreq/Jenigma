@@ -18,7 +18,12 @@ var oEvent = window.event,
 		var j =0;
 		//reset (wygaszanie) liter po poprzednim znaku
 		do {
-			oLetterList.children[j].setAttribute("lit","no");
+			if(oLetterList.children[j].getAttribute("lit") == "red") {
+				//TU SKOŃCZYŁEŚ: NIE DZIAŁA POPRAWNIE!
+			}
+			else {
+				oLetterList.children[j].setAttribute("lit","no");
+			}
 		}
 		while(++j<26);
 		
