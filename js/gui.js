@@ -15,23 +15,18 @@ var oEvent = window.event,
 			Funkcja służy do poświetlania styku przez który aktualnie przepływa sygnał.
 			Funkcja rozróżnia kierunek przepływu sygnału (false lub 0 dla fazy propagacji; true lub 1 dla fazy powrotu).
 		*/
-		var j =0;
-		//reset (wygaszanie) liter po poprzednim znaku
-		do {
-			if(oLetterList.children[j].getAttribute("lit") == "red") {
-				//TU SKOŃCZYŁEŚ: NIE DZIAŁA POPRAWNIE!
-			}
-			else {
-				oLetterList.children[j].setAttribute("lit","no");
-			}
-		}
-		while(++j<26);
-		
-		j = (26+(13-iContact))%26;
+		var j = (26+(13-iContact))%26;
 		if(bDirection) {
 			oLetterList.children[j].setAttribute("lit","green");
 		}
 		else {
+			j = 0;
+			do {
+				//reset (wygaszanie) liter po poprzednim przejściu sygnału
+				oLetterList.children[j].setAttribute("lit","no");
+			}
+			while(++j<26);
+			j = (26+(13-iContact))%26;
 			oLetterList.children[j].setAttribute("lit","red");
 		}
 		return false;
