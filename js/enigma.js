@@ -27,56 +27,56 @@ Rotors = {
 				wykonującej kroki wirników, wartość zmiennej jest zawsze o 1 MNIEJSZA względem
 				indeksu litery w okienku (określanej przez zmienną this.currentPosition), PO KROKU której o następną pozycję (literę) występuje obrot następnego wirnika. Np. dla wirnika I: (Q->R); litera w okienku tuż przed krokiem to Q[indeks 16]; w następnym kroku zmieni się na R[indeks 17], WIĘC: 16 (indeks litery Q) odjąć 1 = 15 i to jest prawidłowa wartość this.notchAt.
 			*/
-			notchAt: [15], //gdy wirnik w okienku pokazuje literę "Q".
+			notchAt: 15, //gdy wirnik w okienku pokazuje literę "Q".
 			isMoveable: true
 		},
 		2: {
 			name: "II",
 			rightContacts: [0,9,3,10,18,8,17,20,23,1,11,7,22,19,12,2,16,6,25,13,15,24,5,21,14,4],
 			leftContacts: [0,9,15,2,25,22,17,11,5,1,3,10,14,19,24,20,16,6,4,13,7,23,12,8,21,18],
-			notchAt: [3], //E
+			notchAt: 3, //E
 			isMoveable: true			
 		},
 		3: {
 			name: "III",
 			rightContacts: [1,3,5,7,9,11,2,15,17,19,23,21,25,13,24,4,8,22,6,0,10,12,20,18,16,14],
 			leftContacts: [19,0,6,1,15,2,18,3,16,4,20,5,21,13,25,7,24,8,23,9,22,11,17,10,14,12],
-			notchAt: [20], //V
+			notchAt: 20, //V
 			isMoveable: true	
 		},
 		4: {
 			name: "IV",
 			rightContacts: [4,18,14,21,15,25,9,0,24,16,20,8,17,7,23,11,13,5,19,6,10,3,2,12,22,1],
 			leftContacts: [7,25,22,21,0,17,19,13,11,6,20,15,23,16,2,4,9,12,1,18,10,3,24,14,8,5],
-			notchAt: [8], //J
+			notchAt: 8, //J
 			isMoveable: true	
 		},
 		5: {
 			name: "V",
 			rightContacts: [21,25,1,17,6,8,19,24,20,15,18,3,13,7,11,23,0,22,12,9,16,14,5,4,2,10],
 			leftContacts: [16,2,24,11,23,22,4,13,5,19,25,14,18,12,21,9,20,3,10,6,8,0,17,15,7,1],
-			notchAt: [24], //Z
+			notchAt: 24, //Z
 			isMoveable: true	
 		},
 		6: {
 			name: "VI",
 			rightContacts: [9,15,6,21,14,20,12,5,24,16,1,4,13,7,25,17,3,10,0,18,23,11,8,2,19,22],
 			leftContacts: [18,10,23,16,11,7,2,13,22,0,17,21,6,12,4,1,9,15,19,24,5,3,25,20,8,14],
-			notchAt: [15],
+			notchAt: 11, //M
 			isMoveable: true	
 		},
 		7: {
 			name: "VII",
 			rightContacts: [13,25,9,7,6,17,2,23,12,24,18,22,1,14,20,5,0,8,21,11,15,4,10,16,3,19],
 			leftContacts: [16,12,6,24,21,15,4,3,17,2,22,19,8,0,13,20,23,5,10,25,14,18,11,7,9,1],
-			notchAt: [15],
+			notchAt: 11, //M
 			isMoveable: true	
 		},
 		8: {
 			name: "VIII",
 			rightContacts: [5,10,16,7,19,11,23,14,2,1,9,18,15,3,25,17,0,12,4,22,13,8,20,24,6,21],
 			leftContacts: [16,9,8,13,18,0,24,3,21,10,1,5,17,20,7,12,2,15,11,4,22,25,19,6,23,14],
-			notchAt: [15],
+			notchAt: 11, //M
 			isMoveable: true	
 		},
 		9: {
@@ -150,6 +150,8 @@ step = function() {
 	this.currentPosition = (++this.currentPosition)%26;
 	this.currentOffset = (++this.currentOffset)%26;
 	this.currentNotchOffset > 0 ? this.currentNotchOffset-- : this.currentNotchOffset = 25;
+	//dekrementacja pozycji drugiego wycięcia
+	this.currentSecondNotchOffset > 0 ? this.currentSecondNotchOffset-- : this.currentSecondNotchOffset = 25;
 	
 	//ustawiamy flagę wirnika informującą o obrocie kolejnego wirnika
 	if(this.currentNotchOffset < 25) {
@@ -160,6 +162,20 @@ step = function() {
 		gdy kolejne naciśnięcie klawisza (a więc i przekręcenie się licznika this.currentNotchOffset z wartości zero na 25) ustawienie 
 		flagi this.stepNextRotor na true występuje wtedy i tylko wtedy, gdy  this.currentNotchOffset = 25 */
 		this.stepNextRotor = true;
+		return;
+	}
+	
+	//ustawiamy flagę wirnika informującą o obrocie kolejnego wirnika ze względu na drugie wycięcie w wirnikach typu od VI do VIII
+	if(this.type > 5 && this.type < 9) { //tylko dla wirników od VI do VIII
+		if(this.currentSecondNotchOffset < 25) {
+			this.stepNextRotor = false;
+		}
+		else {
+			/* Z uwagi na to, że krok kolejnego wirnika występuje dopiero,
+			gdy kolejne naciśnięcie klawisza (a więc i przekręcenie się licznika this.currentNotchOffset z wartości zero na 25) ustawienie 
+			flagi this.stepNextRotor na true występuje wtedy i tylko wtedy, gdy  this.currentNotchOffset = 25 */
+			this.stepNextRotor = true;
+		}
 	}
 	
 	//console.log("currentPosition: "+this.currentPosition+"; currentNotchOffset: "+this.currentNotchOffset+"; currentOffset: "+this.currentOffset);
@@ -176,7 +192,7 @@ set = function(iRingstellung, iLetter) {
 	//zawsze resetuj zmienne!
 	this.currentOffset = 0; 
 	this.currentPosition = 0;
-	this.currentNotchOffset = (this.notchAt*1); //pozycja wyjściowa dla danego wirnika
+	this.currentNotchOffset = this.notchAt; //pozycja wyjściowa dla danego wirnika
 	
 	if(iRingstellung<=25 && iRingstellung>=0) {
 		this.currentPosition += iRingstellung; //przesuwamy pierścień alfabetyczny względem połączeń wirnika. Wirnik nadal znajduje się w pozycji A-01 stojana, zaś litera na pierścieniu alfabetycznym znajduje się w okienku literowym Enigmy na tym wirniku w pozycji zadanej poprzez dodanie do zera wartości iRingstellung.
@@ -185,6 +201,7 @@ set = function(iRingstellung, iLetter) {
 			Wraz z przesunięciem się pierścienia alfabetycznego, przesuwa się także wycięcie (notch) na tym pierścieniu.
 		*/
 		this.currentNotchOffset = (26 + this.currentNotchOffset - iRingstellung)%26;
+		this.currentSecondNotchOffset = (26 + this.currentSecondNotchOffset - iRingstellung)%26;
 		
 	}
 	if(iLetter<=25 && iLetter>=0) {
@@ -203,7 +220,14 @@ set = function(iRingstellung, iLetter) {
 		/*
 			Wraz z ustawieniem wirnika i przytwierdzonego doń pierścienia alfabetycznego, znów przesuwa się wycięcie pierścienia.
 		*/
-		this.currentNotchOffset = (26 + this.currentNotchOffset - iSettingOffset)%26; //ostateczna pozycja wycięcia
+		this.currentNotchOffset = (26 + this.currentNotchOffset - iSettingOffset)%26; //ostateczna pozycja pierwszego wycięcia
+		
+		this.currentSecondNotchOffset = (26 + this.currentNotchOffset + 13)%26; //ostateczna pozycja drugiego wycięcia
+		
+		/*
+		Należy pamiętać, że odtąd nie obracamy już tylko pierścienia na wirniku, lecz cały wirnik, a więc i jego uzwojenie! Pozycja styku A-01 uzwojenia względem styku A-01 stojana również się zmieni o wartość tymczasowej zmiennej iSettingOffset.
+		*/
+		this.currentOffset = (26 + iSettingOffset)%26;
 		
 		//w tym miejscu sprawdzamy, czy nie należy ustawić flagi wirnika informującej o obrocie kolejnego wirnika (porównaj z analogicznym zapisaem w f-cji step())
 		if(this.currentNotchOffset < 25) {
@@ -211,14 +235,22 @@ set = function(iRingstellung, iLetter) {
 		}
 		else {
 			this.stepNextRotor = true;
+			return;
 		}
 		
-		/*
-		Należy pamiętać, że odtąd nie obracamy już tylko pierścienia na wirniku, lecz cały wirnik, a więc i jego uzwojenie! Pozycja styku A-01 uzwojenia względem styku A-01 stojana również się zmieni o wartość tymczasowej zmiennej iSettingOffset.
-		*/
-		this.currentOffset = (26 + iSettingOffset)%26;
+		if(this.type > 5 && this.type < 9) { //tylko dla wirników od VI do VIII
+			if(this.currentSecondNotchOffset < 25) {
+				this.stepNextRotor = false;
+			}
+			else {
+				/* Z uwagi na to, że krok kolejnego wirnika występuje dopiero,
+				gdy kolejne naciśnięcie klawisza (a więc i przekręcenie się licznika this.currentNotchOffset z wartości zero na 25) ustawienie 
+				flagi this.stepNextRotor na true występuje wtedy i tylko wtedy, gdy  this.currentNotchOffset = 25 */
+				this.stepNextRotor = true;
+			}
+		}
 	}
-	//console.log("currentPosition: "+this.currentPosition+"; currentNotchOffset: "+this.currentNotchOffset+"; currentOffset: "+this.currentOffset);
+	
 	return;
 },
 
@@ -252,7 +284,6 @@ getCurrentPosition = function() {
 encipher = function(iCharCode) {
 	// ### etap ustawiania (obrotu) wirników
 	
-	//TODO: wpasować tu wywołanie metod stepContactsPositionOnRotor()
 	if(this.rotor1.stepNextRotor == true) {
 		if(this.rotor2.stepNextRotor == true) {
 			this.rotor3.step();
@@ -266,6 +297,28 @@ encipher = function(iCharCode) {
 	this.rotor1.step(); //wirnik 1 kroczy przy każdorazowym naciśnięciu dowolnej litery
 	stepContactsPositionOnRotor(this.rotor1);
 	stepRingPositionOnRotor(this.rotor1);
+	
+	/*### TUTAJ dodałeś dodatkową logikę kroku kolejnych wirników
+		TODO: gdzieś tutaj jest błąd, bo 2. lub 3. wirnik przeskakuje o dwie litery zamiast jednej!
+	*/
+	if(this.rotor2.stepNextRotor == true) {
+		this.rotor3.step();
+		stepContactsPositionOnRotor(this.rotor3);
+		stepRingPositionOnRotor(this.rotor3);
+		
+		this.rotor2.step();
+		stepContactsPositionOnRotor(this.rotor2);
+		stepRingPositionOnRotor(this.rotor2);
+	}
+	
+	if(this.rotor3.stepNextRotor == true) {
+		this.rotor3.step();
+		stepContactsPositionOnRotor(this.rotor3);
+		stepRingPositionOnRotor(this.rotor3);
+	}
+	/*### KONIEC dodatkowej logiki kroków kolejnych wirników */
+	
+	
 	/*
 	Przepływ sygnału:
 		(1) Klawiatura (iCharCode) -> 
@@ -322,6 +375,7 @@ encipher = function(iCharCode) {
 	
 	this.output.charCode = this.plugboard.output;
 	this.output.charName = Letters[this.plugboard.output];
+		lightLamps(this.output.charCode);
 	
 	//DEBUGGER
 	//console.log("Wyjście Enigmy: "+e.output.charName);
@@ -381,7 +435,11 @@ function Plugboard() {
 
 function Rotor(iType,sRotorDomId="fourth") {
 	//funkcja tworzy obiekt wirnika danego typu 
-	this.name = Rotors.types[iType].name;
+	
+	this.type = iType*1; //prymitywne zabezpieczenie w postaci wymuszenia rzutowania typu na int na wypadek, gdyby programista jednak był idiotą;) Właściwość przyda się przy w metodzie step() przy podejmowaniu decyzji, czy sprawdzać pozycję drugiego wycięcią na pierścieniu alfabetycznym (this.currentSecondNotchOffset).
+	
+	this.name = Rotors.types[this.type].name;
+	
 	
 	//przypisany element DOM o danym id w GUI aplikacji (np. div o id="forth").
 	this.guiElement = document.getElementById(sRotorDomId);
@@ -409,7 +467,9 @@ function Rotor(iType,sRotorDomId="fourth") {
 	*/
 	this.currentOffset = 0; //o ile prawy styk A-01 (this.rightContacts[0]) wirnika przesunął się względem styku wyjściowego A-01 stojana. Jest to zawsze liczba całkowita z zakresu <0,25>.
 	this.currentPosition = 0; //która litera na pierścieniu alfabetycznym znajduje się w okienku literowym Enigmy na tym wirniku.
-	this.currentNotchOffset = this.currentPosition + (this.notchAt*1); // wyznacza, kiedy popychacz trafia na wycięcie (notch) pierścienia.  this.currentNotchOffset jest dekrementowana z każdym wywołaniem mtody this.step() aż osiągnie zero. Wtedy w następnym kroku nastąpi przesunięcie kolejnego wirnika z lewej o jedną pozycję (i TEGO wirnika także). W następny kroku (this.step()) także this.currentNotchOffset zostaje ustawiona na 25 i całe odejmowanie zaczyna się od początku.
+	this.currentNotchOffset = this.currentPosition + this.notchAt; // wyznacza, kiedy popychacz trafia na wycięcie (notch) pierścienia.  this.currentNotchOffset jest dekrementowana z każdym wywołaniem mtody this.step() aż osiągnie zero. Wtedy w następnym kroku nastąpi przesunięcie kolejnego wirnika z lewej o jedną pozycję (i TEGO wirnika także). W następny kroku (this.step()) także this.currentNotchOffset zostaje ustawiona na 25 i całe odejmowanie zaczyna się od początku.
+	
+	this.currentSecondNotchOffset = this.currentNotchOffset + 14; //dla wirników od VI do VIII. Tam występuje drugie wycięcie, które jest oddalone od pierwszego o 13 liter w przód. Jednakże: ponieważ przy sprawdzaniu zliczamy offset wycięcia w dół do zera ("przekręcenie" licznika następuje PO przejściu przez zero), to musimy skompensować tę dodatkową pozycję i dlatego dodajemy 14, a nie 13 do this.currentNotchOffset. Właściwość this.currentSecondNotchOffset ustawiana wszystkich typów wirników, ale sprawdzana będzie tylko dla wirników od VI do VIII.
 	
 	// ### Flagi stanu wirnika ###
 	this.stepNextRotor = false; //jeśli ta flaga jest ustawiona na true, wirnik wymusi krok kolejnego wirnika (na lewo od niego).

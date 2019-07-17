@@ -229,6 +229,7 @@ ul.indexes li {
 .lamps-panel {
 	border: 1px solid yellow;
 	width: 960px;
+	height: 240px;
 	position: absolute;
 	top: 340px;
 	left: 50px;
@@ -241,19 +242,135 @@ ul.indexes li {
 	margin: 5px auto;
 }
 
-.lamps-row ul li {
-	display: inline-block;
+/* ### Panel lampek ###*/
+.lamps-row span {
+	/*margin-left: 20px; 
+	padding-top: 6px;*/
+	display: block;
+	position: absolute;	
+	top: 20px;
+	left: 0px;
 	width: 45px;
 	height: 39px;
-	margin-left: 20px;
 	border-radius: 100%;
-	border: 2px solid #fff;
-	color: #fff;
-	background-color: #000;
 	font-size: 30px;
 	text-align: center;
-	padding-top: 6px;
 }
+
+.lamps-row span[lit="no"] {
+	border: 2px solid #fff;
+	color: #fff;
+	background-color: #000;	
+}
+
+.lamps-row span[lit="yes"] {
+	border: 2px solid red;
+	color: #ff7600;
+	background-color: #fbf533;	
+}
+
+
+/* # Górny rząd #*/
+span#lamp-Q {
+	left: 0px;
+}
+span#lamp-W {
+	left: 65px;
+}
+span#lamp-E {
+	left: 130px;
+}
+span#lamp-R {
+	left: 195px;
+}
+span#lamp-T {
+	left: 260px;
+}
+span#lamp-Z {
+	left: 325px;
+}
+span#lamp-U {
+	left: 390px;
+}
+span#lamp-I {
+	left: 455px;
+}
+span#lamp-O {
+	left: 520px;
+}
+
+/* # Środkowy rząd #*/
+span#lamp-A {
+	top: 80px;
+	left: 30px;
+}
+span#lamp-S {
+	top: 80px;
+	left: 95px;
+}
+span#lamp-D {
+	top: 80px;
+	left: 160px;
+}
+span#lamp-F {
+	top: 80px;
+	left: 225px;
+}
+span#lamp-G {
+	top: 80px;
+	left: 290px;
+}
+span#lamp-H {
+	top: 80px;
+	left: 355px;
+}
+span#lamp-J {
+	top: 80px;
+	left: 410px;
+}
+span#lamp-K {
+	top: 80px;
+	left: 475px;
+}
+
+/* # Dolny rząd #*/
+span#lamp-P {
+	top: 140px;
+	left: 0px;
+}
+span#lamp-Y {
+	top: 140px;
+	left: 65px;
+}
+span#lamp-X {
+	top: 140px;
+	left: 130px;
+}
+span#lamp-C {
+	top: 140px;
+	left: 195px;
+}
+span#lamp-V {
+	top: 140px;
+	left: 260px;
+}
+span#lamp-B {
+	top: 140px;
+	left: 325px;
+}
+span#lamp-N {
+	top: 140px;
+	left: 390px;
+}
+span#lamp-M {
+	top: 140px;
+	left: 455px;
+}
+span#lamp-L {
+	top: 140px;
+	left: 520px;
+}
+
 .description {
 	font-size: 10px;
 	font-family: Verdana, Helvetica, Arial, sans-serif;

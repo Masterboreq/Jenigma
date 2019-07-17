@@ -9,6 +9,7 @@
 var oEvent = window.event,
 	action = null,
 	oContactStrips = document.getElementsByClassName("contacts"),
+	oLamps = document.getElementById("lamps"),
 
 	hightlightLetterStrips = function(oLetterList, iContact, bDirection=0) {
 		/*
@@ -29,6 +30,21 @@ var oEvent = window.event,
 			j = (26+(13-iContact))%26;
 			oLetterList.children[j].setAttribute("lit","red");
 		}
+		return false;
+	},
+	lightLamps = function(iLetter) {
+		/*
+			Funkcja służy do zapalania lampki panelu wyjściowego.
+		*/
+			j = 0;
+		do {
+			//reset (wygaszanie) lampek po poprzednim przejściu sygnału
+			oLamps.children[j].setAttribute("lit","no");
+		}
+		while(++j<26);
+		
+		//zapalanie właściwej lampki
+		oLamps.children[iLetter].setAttribute("lit","yes");
 		return false;
 	},
 	setContactsPositionOnRotor = function(oRotor) {
