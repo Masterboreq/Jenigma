@@ -39,13 +39,28 @@ ul {
 #fast {
 	left: 650px;
 }
+#fast-rotor-desc {
+	position: absolute;
+	top: 0px;
+	left: 680px;
+}
 
 #middle {
 	left: 450px;
 }
+#middle-rotor-desc {
+	position: absolute;
+	top: 0px;
+	left: 480px;
+}
 
 #slow {
 	left: 250px;
+}
+#slow-rotor-desc {
+	position: absolute;
+	top: 0px;
+	left: 280px;
 }
  
 .rotor {

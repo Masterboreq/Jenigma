@@ -10,6 +10,10 @@ var oEvent = window.event,
 	action = null,
 	oContactStrips = document.getElementsByClassName("contacts"),
 	oLamps = document.getElementById("lamps"),
+	oFastRotorDescLabel = document.getElementById("fast-rotor-desc"),
+	oMiddleRotorDescLabel = document.getElementById("middle-rotor-desc"),
+	oSlowRotorDescLabel = document.getElementById("slow-rotor-desc"),
+	oReflectorDescLabel = document.getElementById("reflector-desc"),
 
 	hightlightLetterStrips = function(oLetterList, iContact, bDirection=0) {
 		/*

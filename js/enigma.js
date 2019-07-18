@@ -28,7 +28,7 @@ Rotors = {
 				indeksu litery w okienku (określanej przez zmienną this.currentPosition), PO KROKU której o następną pozycję (literę) występuje obrot następnego wirnika. Np. dla wirnika I: (Q->R); litera w okienku tuż przed krokiem to Q[indeks 16]; w następnym kroku zmieni się na R[indeks 17], WIĘC: 16 (indeks litery Q) odjąć 1 = 15 i to jest prawidłowa wartość this.notchAt.
 			*/
 			notchAt: 15, //gdy wirnik w okienku pokazuje literę "Q".
-			isMoveable: true
+			isMoveable: true //ANACHRONIZM! Przeznaczone do usunięcia wkrótce.
 		},
 		2: {
 			name: "II",
@@ -120,14 +120,12 @@ Reflectors = {
 		4: {
 			name: "Umkehrwalze Bruno",
 			shortname: "Bruno",
-			contacts: [
-			]			
+			contacts: [4,13,10,16,0,20,24,22,9,8,2,14,15,1,11,12,3,23,25,21,5,19,7,17,6,18]
 		},
 		5: {
 			name: "Umkehrwalze Cäsar",
 			shortname: "Cäsar",
-			contacts: [
-			]			
+			contacts: [17,3,14,1,9,13,19,10,21,4,7,12,11,5,2,22,25,0,23,6,24,8,15,18,20,16]
 		}
 	}
 },
@@ -263,7 +261,6 @@ code = function(iInput, bIsReflected=false) {
 		
 		Zwracana wartość to pozycja (nr styku) względem stojana.
 	*/
-	//TODO: DO POPRAWY arytmetyka wyboru elementu tablicy!	
 	if(bIsReflected) {
 		//faza powrotu 
 		this.output = this.leftContacts[(iInput + this.currentOffset)%26] - this.currentOffset; //to jest ciekawe!! (DO SPRAWDZENIA - POWINNO DZIAŁAĆ POPRAWNIE)
@@ -282,25 +279,17 @@ getCurrentPosition = function() {
 }
 
 encipher = function(iCharCode) {
-	// ### etap ustawiania (obrotu) wirników
-	
-	if(this.rotor1.stepNextRotor == true) {
-		if(this.rotor2.stepNextRotor == true) {
-			this.rotor3.step();
-			stepContactsPositionOnRotor(this.rotor3);
-			stepRingPositionOnRotor(this.rotor3);
-		}
-		this.rotor2.step();
-		stepContactsPositionOnRotor(this.rotor2);
-		stepRingPositionOnRotor(this.rotor2);
-	}
-	this.rotor1.step(); //wirnik 1 kroczy przy każdorazowym naciśnięciu dowolnej litery
-	stepContactsPositionOnRotor(this.rotor1);
-	stepRingPositionOnRotor(this.rotor1);
-	
-	/*### TUTAJ dodałeś dodatkową logikę kroku kolejnych wirników
-		TODO: gdzieś tutaj jest błąd, bo 2. lub 3. wirnik przeskakuje o dwie litery zamiast jednej!
+	/*
+		Funkcja odpowiada za szyfrowanie znaku wchodzącego i wyprowadzenie w formie zaszyfrowanej (podstawionej innym znakiem).
 	*/
+	
+	// ### etap ustawiania (obrotu) wirników
+	if(this.rotor3.stepNextRotor == true) {
+		this.rotor3.step();
+		stepContactsPositionOnRotor(this.rotor3);
+		stepRingPositionOnRotor(this.rotor3);
+	}
+	
 	if(this.rotor2.stepNextRotor == true) {
 		this.rotor3.step();
 		stepContactsPositionOnRotor(this.rotor3);
@@ -311,13 +300,15 @@ encipher = function(iCharCode) {
 		stepRingPositionOnRotor(this.rotor2);
 	}
 	
-	if(this.rotor3.stepNextRotor == true) {
-		this.rotor3.step();
-		stepContactsPositionOnRotor(this.rotor3);
-		stepRingPositionOnRotor(this.rotor3);
+	if(this.rotor1.stepNextRotor == true) {
+		this.rotor2.step();
+		stepContactsPositionOnRotor(this.rotor2);
+		stepRingPositionOnRotor(this.rotor2);
 	}
-	/*### KONIEC dodatkowej logiki kroków kolejnych wirników */
-	
+		
+	this.rotor1.step();
+	stepContactsPositionOnRotor(this.rotor1);
+	stepRingPositionOnRotor(this.rotor1);
 	
 	/*
 	Przepływ sygnału:
@@ -481,7 +472,6 @@ function Rotor(iType,sRotorDomId="fourth") {
 	this.code = code; //funkcja odpowiadająca za substytucję znaków, czyli transkodowanie sygnału przez wirnik.
 	this.getCurrentPosition = getCurrentPosition; //zwraca aktualną literę w okienka wirnika. Metoda konwertuje this.currentPosition na literę z tablicy globalnej Letters.
 	this.toString = function() {
-		//TODO: zrewidować!
 		var dltr = ";\n";
 		console.log("Wirnik " + this.name + dltr + "Pozycja: "+this.getCurrentPosition() + dltr +"currentOffset: " + Letters[this.currentOffset] + dltr + "currentNotchOffset: " + this.currentNotchOffset + dltr + "Styk wyjściowy: "+ Letters[this.output]);
 		return false;
