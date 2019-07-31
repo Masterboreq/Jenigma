@@ -32,8 +32,17 @@ setRingPositionOnRotor(r3);
 
 //wyświetlanie zaktualizowanych podpisów na elementach maszyny
 oFastRotorDescLabel.textContent = "Szybki wirnik typu "+r1.name;
-oMiddleRotorDescLabel.textContent = "Średni wirnik typu "+r2.name;
+oMiddleRotorDescLabel.textContent = "Środkowy wirnik typu "+r2.name;
 oSlowRotorDescLabel.textContent = "Wolny wirnik typu "+r3.name;
 oReflectorDescLabel.textContent = ref.shortname;
 
 document.addEventListener("keydown", handleActions, true);
+oFreehandModeIndicator.addEventListener("click", handleActions, true);
+oProtocolModeIndicator.addEventListener("click", handleActions, true);
+r1.guiElement.addEventListener("mouseover", handleActions, true);
+r2.guiElement.addEventListener("mouseover", handleActions, true);
+r3.guiElement.addEventListener("mouseover", handleActions, true);
+
+r1.guiElement.addEventListener("mouseout", handleActions, true);
+r2.guiElement.addEventListener("mouseout", handleActions, true);
+r3.guiElement.addEventListener("mouseout", handleActions, true);

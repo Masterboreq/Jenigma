@@ -14,6 +14,8 @@ var oEvent = window.event,
 	oMiddleRotorDescLabel = document.getElementById("middle-rotor-desc"),
 	oSlowRotorDescLabel = document.getElementById("slow-rotor-desc"),
 	oReflectorDescLabel = document.getElementById("reflector-desc"),
+	oFreehandModeIndicator = document.getElementById("fh-indicator"),
+	oProtocolModeIndicator = document.getElementById("prtcl-indicator"),
 
 	hightlightLetterStrips = function(oLetterList, iContact, bDirection=0) {
 		/*
@@ -197,33 +199,58 @@ handleActions = function(oEvent) {
 		else if(oEvent.type == "click") {
 			action = oEvent.target.hash;
 			action = action.substring(1); //usuwamy znak "#"
-			/*
+			
 			switch(action) {
-				case "proceed":
-				//obsługa polecenia proceed
-					if(sPreviousGUIState == "endgame") {
-						//p-podobnie warunkiem mogłoby być bPlay==true
-						//monit o potwierdzenie zakończenia bieżącej rozgrywki
-						action = "gameover";
-					}
-					else if(bGameOver && sPreviousGUIState=="init") {
-						action = "newgame";
-						break;
-					}
-					else if(bGameOver && sPreviousGUIState=="continue") {
-						action = "continue";
-						break;
-					}
-					else if(bGameOver && sPreviousGUIState=="gameover") {
-						action = "continue";
-						break;
-					}
+				case "protocol":
+				//obsługa trybu "protocol"
+					action = "protocol";
 				break;
-				case "goback":
-					if(sPreviousGUIState == "endgame") {
-						action = "resume";
-					}
-			} */
+				case "freehand":
+				//obsługa trybu "freehand"
+					action = "freehand";
+				break;
+			}
+		}
+		else if(oEvent.type == "mouseover") {
+			//oEvent.
+			action = oEvent.currentTarget.getAttribute("id");
+			
+			switch(action) {
+				case "fast":
+					//JEŻELI w trybie ustawiania (freehand lub protocol), to UMOŻLIW edycję
+					//jeśli NIE, wyświetl etykietę
+					oFastRotorDescLabel.style.display = "inline-block";
+				break;
+				case "middle":
+				//
+				
+					oMiddleRotorDescLabel.style.display = "inline-block";
+				break;
+				case "slow":
+				//
+					oSlowRotorDescLabel.style.display = "inline-block";
+				break;
+			}
+		}
+		else if(oEvent.type == "mouseout") {
+			//oEvent.
+			action = oEvent.currentTarget.getAttribute("id");
+			
+			switch(action) {
+				case "fast":
+					//JEŻELI w trybie ustawiania (freehand lub protocol), to UMOŻLIW edycję
+					//jeśli NIE, wyświetl etykietę
+					oFastRotorDescLabel.style.display = "none";
+				break;
+				case "middle":
+				
+					oMiddleRotorDescLabel.style.display = "none";
+				break;
+				case "slow":
+				//
+					oSlowRotorDescLabel.style.display = "none";
+				break;
+			}
 		}
 		/* ### 1.3 Translacja argumentów przekazanych do funkcji na akcje aplikacji ### */
 		else {
@@ -254,111 +281,17 @@ handleActions = function(oEvent) {
 		console.log("Wprowadzono na wejście literę: "+Letters[action]);
 		
 		/* ### Akcje aplikacji ### */
-		/*
-		switch(action) {
-			//Przesuwanie klocka w lewo 
-			case "moveleft": bPlay ? stepSide(0) : null;
+		switch(action) {			
+			case "protocol": oProtocolModeIndicator.setAttribute("lit", "yes");
+				oFreehandModeIndicator.setAttribute("lit", "no");
 			break;
-			//Obrót klocka (zawsze przeciwnie do ruchu wskazówek zegara)
-			case "flip": bPlay ? flipPiece() : null;
+			
+			case "freehand": oProtocolModeIndicator.setAttribute("lit", "no");
+				oFreehandModeIndicator.setAttribute("lit", "yes");
 			break;
-			//Przesuwanie klocka w prawo
-			case "moveright": bPlay ? stepSide(1) : null;
-			break;
-			//Hard drop klocka
-			case "drop": bPlay ? dropPiece() : null;
-			break;
+			
 		
-			case "goback": //DEPRECATED: goback i proceed nie są akcjami gry, tylko poleceniami do kontrolera!
-			break;
-			case "proceed"://DEPRECATED; j.w.
-			break;
-			case "init":
-				sPreviousGUIState = "init";
-				controlGUIPrompts("newplayer");
-			break;
-			case "continue":
-				sPreviousGUIState = "init";
-				controlGUIPrompts("oldplayer");
-			break;
-			case "newgame":
-				start();
-				controlGUIPrompts("resume");
-			break;
-			case "pause":
-				//TODO: zastanowić się nad obsługą przycisku pauzy w 1. stopniu (!) kontrolera
-				togglePlay();
-				controlGUIPrompts("pause");
-			break;
-			case "resume":
-				//TODO: przenieść do 1. stopnia kontrolera: obsługa przycisku resume/back
-				//TODO: "Back" to będzie przycisk zamykający na górze okna ekranów takich jak O Tetrisie, Ustawienia, Codebase itp. (do 1. st. k.)
-				togglePlay();
-				controlGUIPrompts("resume");
-			break;
-			case "endgame":
-				//obsługa przycisku "Zakończ grę" i monitu potwierdzenia
-				bPlay ? togglePlay() : null;
-				controlGUIPrompts("endgame");
-			break;
-			case "gameover":
-				//obsługa stanu "Zakończ grę"
-				clearInterval(iGravityInterval);
-				main(true); //wywołujemy main() z argumentem true, aby funkcja ta zakończyła rozgrywkę
-				sPreviousGUIState = "gameover";
-				controlGUIPrompts("gameover");
-			break;
-			case "storehiscore":
-				//obsługa przycisku "Zapisz wynik" (pod koniec rozgrywki, gdy gracz będzie mógł zapisać swój wynik wsród najlepszych)
-				bGameOver ? controlGUIPrompts("storehiscore") : null;
-			break;
-			case "settings":
-				//obsługa przycisku otwierającego ekran Ustawienia
-				bPlay ? togglePlay() : null;
-				controlGUIPrompts("settings");
-			break;
-			case "scoreboard":
-				//obsługa przycisku otwierającego ekran tablicy najlepszych wyników
-				bPlay ? togglePlay() : null;
-				controlGUIPrompts("scoreboard");
-			break;
-			case "rules":
-				//obsługa przycisku otwierającego ekran Zasady gry
-				bPlay ? togglePlay() : null;
-				controlGUIPrompts("rules");
-			break;
-			case "controls":
-				//obsługa przycisku otwierającego ekran klawiszologii
-				bPlay ? togglePlay() : null;
-				controlGUIPrompts("controls");
-			break;
-			case "about":
-				//obsługa przycisku otwierającego ekran artykułu o oryginalnym Tetrisie
-				bPlay ? togglePlay() : null;
-				controlGUIPrompts("about");
-				
-			break;
-			case "aboutapp":
-				//obsługa przycisku otwierającego ekran informacji o aplikacji
-				bPlay ? togglePlay() : null;
-				controlGUIPrompts("aboutapp");
-			break;
-			case "translate":
-				//obsługa przycisku otwierającego ekran dla tłumaczy
-				bPlay ? togglePlay() : null;
-				controlGUIPrompts("translate");
-			break;
-			case "codebase":
-				//obsługa przycisku otwierającego ekran informacji o bazie kodowej
-				bPlay ? togglePlay() : null;
-				controlGUIPrompts("codebase");
-			break;
-			case "copyright":
-				//obsługa przycisku otwierającego ekran informacji o licencji
-				bPlay ? togglePlay() : null;
-				controlGUIPrompts("copyright");
-			break;
-		} */
+		} /* */
 		
 		/* ### 3. stopień kontrolera: moduł obsługi flagi sPreviousGUIState ### */
 		/*switch(action) {

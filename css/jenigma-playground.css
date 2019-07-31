@@ -5,6 +5,10 @@
 	margin: 0%;
 }
 
+a {
+	text-decoration: none;
+}
+
 body {
 	background-color: #00404e;
 	font-family: Verdana, Helvetica, Arial, sans-serif;
@@ -12,6 +16,45 @@ body {
 
 ul {
 	list-style-type: none;
+}
+
+.clearfloat {
+	clear: both;
+}
+
+#header {
+	width: 99.9%;
+	height: 40px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	border: 1 px solid red;
+	background-color: yellow;
+}
+
+.menu-item {
+	float: left;
+	width: 190px;
+	height: 36px;
+	font-size: 14px;
+}
+
+.menu-item a {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+div[lit="no"] {
+	border: 2px solid #fff;
+	color: #fff;
+	background-color: #f00;
+}
+
+div[lit="yes"] {
+	border: 2px solid red;
+	color: #fff;
+	background-color: #0f0;	
 }
 
 .window {
@@ -40,9 +83,10 @@ ul {
 	left: 650px;
 }
 #fast-rotor-desc {
-	position: absolute;
-	top: 0px;
+	position: relative;
+	top: 40px;
 	left: 680px;
+	display: none;
 }
 
 #middle {
@@ -50,8 +94,9 @@ ul {
 }
 #middle-rotor-desc {
 	position: absolute;
-	top: 0px;
+	top: 40px;
 	left: 480px;
+	display: none;
 }
 
 #slow {
@@ -59,7 +104,7 @@ ul {
 }
 #slow-rotor-desc {
 	position: absolute;
-	top: 0px;
+	top: 40px;
 	left: 280px;
 }
  
@@ -68,7 +113,7 @@ ul {
 	width: 160px;
 	height: 306px;
 	position: absolute;
-	top: 20px;
+	top: 60px;
 	overflow: hidden;
 }
 
@@ -119,7 +164,7 @@ ul {
 	width: 30px;
 	height: 310px;
 	position: absolute;
-	top: 20px;
+	top: 60px;
 	overflow: hidden;
 }
 
@@ -246,7 +291,7 @@ ul.indexes li {
 	width: 960px;
 	height: 240px;
 	position: absolute;
-	top: 340px;
+	top: 400px;
 	left: 50px;
 	font-family: Georgia, "Times New Roman", serif;
 }
@@ -283,7 +328,6 @@ ul.indexes li {
 	color: #ff7600;
 	background-color: #fbf533;	
 }
-
 
 /* # Górny rząd #*/
 span#lamp-Q {
