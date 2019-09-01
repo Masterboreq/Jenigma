@@ -16,7 +16,22 @@ var oEvent = window.event,
 	oReflectorDescLabel = document.getElementById("reflector-desc"),
 	oFreehandModeIndicator = document.getElementById("fh-indicator"),
 	oProtocolModeIndicator = document.getElementById("prtcl-indicator"),
-
+	oPresetSwitch = document.getElementById("preset-switch"),
+	oControlsSwitch = document.getElementById("controls-switch"),
+	oAboutSwitch = document.getElementById("about-switch"),
+	
+	//panele aplikacji
+	oOverlay = document.getElementById("overlay"),
+	oHeadline = document.getElementById("headline"),
+	oGallery = document.getElementById("machine-gallery"),
+	oManual = document.getElementById("manual"),
+	oAbout = document.getElementById("about-enigma"),
+	oCloseButton = document.getElementById("close-button"),
+	
+		
+	//pozycje menu parku maszynowego
+	oM1 = document.getElementById("m1"),
+	
 	hightlightLetterStrips = function(oLetterList, iContact, bDirection=0) {
 		/*
 			Funkcja służy do poświetlania styku przez który aktualnie przepływa sygnał.
@@ -38,11 +53,66 @@ var oEvent = window.event,
 		}
 		return false;
 	},
+	highlightPlugboardLetters = function(oPlugboard, bDirection=0) {
+		/*
+			Funkcja służy do poświetlania par styków łącznicy kablowej, przez które aktualnie przepływa sygnał.
+			Funkcja rozróżnia kierunek przepływu sygnału (false lub 0 dla fazy propagacji; true lub 1 dla fazy powrotu).
+		*/
+		var sInputChar = String.fromCharCode(oPlugboard.input+65),
+			sOutputChar = String.fromCharCode(oPlugboard.output+65),
+			j = 0;
+		if(!bDirection) {
+			do {
+				//funkcja wymaga, aby istniały w zasięgu głównym programu obiekty list styków literowych
+				oContactStrips[5].children[j].setAttribute("lit","no");
+				oContactStrips[6].children[j].setAttribute("lit","no");
+				oContactStrips[7].children[j].setAttribute("lit","no");
+			}
+			while(++j<9);
+		}
+		
+		j = 0;
+		if(bDirection) {
+			do {
+				if(oContactStrips[7].children[j].textContent == sInputChar) {
+					oContactStrips[7].children[j].setAttribute("lit","green");
+					oContactStrips[6].children[j].setAttribute("lit","green");
+					oContactStrips[5].children[j].setAttribute("lit","green");
+					break;
+				}
+				else if(oContactStrips[5].children[j].textContent == sInputChar) {
+					oContactStrips[7].children[j].setAttribute("lit","green");
+					oContactStrips[6].children[j].setAttribute("lit","green");
+					oContactStrips[5].children[j].setAttribute("lit","green");
+					break;
+				}
+			}
+			while(++j<9);
+		}
+		else {
+			do {
+				if(oContactStrips[5].children[j].textContent == sInputChar) {
+					oContactStrips[5].children[j].setAttribute("lit","red");
+					oContactStrips[6].children[j].setAttribute("lit","red");
+					oContactStrips[7].children[j].setAttribute("lit","red");
+					break;
+				}
+				else if(oContactStrips[7].children[j].textContent == sInputChar) {
+					oContactStrips[7].children[j].setAttribute("lit","red");
+					oContactStrips[6].children[j].setAttribute("lit","red");
+					oContactStrips[5].children[j].setAttribute("lit","red");
+					break;
+				}
+			}
+			while(++j<9);
+		}
+		return false;
+	},
 	lightLamps = function(iLetter) {
 		/*
 			Funkcja służy do zapalania lampki panelu wyjściowego.
 		*/
-			j = 0;
+		var j = 0;
 		do {
 			//reset (wygaszanie) lampek po poprzednim przejściu sygnału
 			oLamps.children[j].setAttribute("lit","no");
@@ -51,6 +121,60 @@ var oEvent = window.event,
 		
 		//zapalanie właściwej lampki
 		oLamps.children[iLetter].setAttribute("lit","yes");
+		return false;
+	},
+	_fIsNotDoublet = function(iNeedle, aDblts) {
+		/*
+			Funkcja pomocnicza służąca do odfiltrowania dubletów wartości podczas wypełniania listy sparowanych kontaktów w widoku łącznicy sygnałowej.
+			Bierze argument iNeedle (sprawdzana wartość) i porównuje jego wartośc z każdym elementem w tablicy aDblts.
+			Zwraca true, jeśli NIE ZNALEZIONO w tablicy aDblts wartości równej iNeedle; w przeciwnym razie:
+				- usuwa z tablicy aDblts element równy iNeedle,
+				- zwraca false.
+		*/
+		var j = 0, l = aDblts.length;
+		if(l==0) {
+			return true;
+		}
+		do {
+			if(aDblts[j]==iNeedle) {
+				aDblts.splice(j, 1);
+				return false;
+			}
+		}
+		while(++j<l)
+		return true;
+	}
+	setContactsOnPlugboard = function(oPlugboard) {
+		
+		var j = 0,
+			aDoublets = [],
+			oWirePairs = {
+				letter: [],
+				substitute: []
+			};
+		do {
+			if(oPlugboard.wiring[j] != j && _fIsNotDoublet(oPlugboard.wiring[j], aDoublets)) {
+				oWirePairs.letter.push(j);
+				oWirePairs.substitute.push(oPlugboard.wiring[j]);
+				aDoublets.push(j);
+			}
+		}
+		while(++j<26);
+		
+		//oWirePairs.letter.sort();
+		//oWirePairs.substitute.sort();
+		console.log("Letters: "+oWirePairs.letter);
+		console.log("Substis: "+oWirePairs.substitute);
+		console.log("Doublets: "+aDoublets);
+		
+		j = 0;
+		l = oWirePairs.letter.length;
+		do {
+			oContactStrips[5].children[j].textContent = Letters[oWirePairs.letter[j]];
+			oContactStrips[6].children[j].textContent = "–";
+			oContactStrips[7].children[j].textContent = Letters[oWirePairs.substitute[j]];
+		}
+		while(++j<l);
 		return false;
 	},
 	setContactsPositionOnRotor = function(oRotor) {
@@ -197,24 +321,42 @@ handleActions = function(oEvent) {
 		
 		/* ### 1.2 Translacja zdarzeń "click" na akcje aplikacji ### */
 		else if(oEvent.type == "click") {
-			action = oEvent.target.hash;
-			action = action.substring(1); //usuwamy znak "#"
+			action = oEvent.currentTarget.getAttribute("id");
 			
 			switch(action) {
-				case "protocol":
+				case "preset-switch":
+				//otwieranie panelu wyboru typu maszyny (parku maszyn)
+					action = "select";
+				break;
+				case "controls-switch":
+				//obsługa trybu "freehand"
+					action = "manual";
+				break;
+				case "about-switch":
+				//obsługa trybu "freehand"
+					action = "about";
+				break;
+				case "prtcl-indicator":
 				//obsługa trybu "protocol"
 					action = "protocol";
 				break;
-				case "freehand":
+				case "fh-indicator":
 				//obsługa trybu "freehand"
 					action = "freehand";
+				break;
+				case "close-button":
+				//zamykanie Overlay'a
+					action = "close";
+				break;
+				case "m1":
+				//wybór maszyny 1
+					action = "m1";
 				break;
 			}
 		}
 		else if(oEvent.type == "mouseover") {
-			//oEvent.
 			action = oEvent.currentTarget.getAttribute("id");
-			
+			//TODO: zawrzeć logikę zdarzenia w controlGUIPrompts()
 			switch(action) {
 				case "fast":
 					//JEŻELI w trybie ustawiania (freehand lub protocol), to UMOŻLIW edycję
@@ -233,7 +375,7 @@ handleActions = function(oEvent) {
 			}
 		}
 		else if(oEvent.type == "mouseout") {
-			//oEvent.
+			//TODO: zawrzeć logikę zdarzenia w controlGUIPrompts()
 			action = oEvent.currentTarget.getAttribute("id");
 			
 			switch(action) {
@@ -274,202 +416,180 @@ handleActions = function(oEvent) {
 				} */
 			}
 		}
-
-
 		
 		/* ### 2. stopień kontrolera: obsługa akcji gry ### */
-		console.log("Wprowadzono na wejście literę: "+Letters[action]);
+		//console.log("Wprowadzono na wejście literę: "+Letters[action]);
 		
 		/* ### Akcje aplikacji ### */
 		switch(action) {			
-			case "protocol": oProtocolModeIndicator.setAttribute("lit", "yes");
-				oFreehandModeIndicator.setAttribute("lit", "no");
+			case "protocol": controlGUIPrompts("protocol");
 			break;
 			
-			case "freehand": oProtocolModeIndicator.setAttribute("lit", "no");
-				oFreehandModeIndicator.setAttribute("lit", "yes");
+			case "freehand": controlGUIPrompts("freehand");
 			break;
 			
-		
-		} /* */
-		
-		/* ### 3. stopień kontrolera: moduł obsługi flagi sPreviousGUIState ### */
-		/*switch(action) {
-			case "newgame":
-				sPreviousGUIState = "init";
+			case "about": controlGUIPrompts("about");
 			break;
-			case "init":
-				sPreviousGUIState = "init";
+			
+			case "manual": controlGUIPrompts("manual");
 			break;
-			case "endgame":
-				sPreviousGUIState = "endgame";
+			
+			case "select": controlGUIPrompts("select");
 			break;
-			default:
-			//domyślne przypisanie wartości zmiennej sPreviousGUIState
-			//sPreviousGUIState = "resume";
-			//sPreviousGUIState = action;
+			
+			case "close": controlGUIPrompts("close");			
 			break;
-		} */
+			
+			case "m1": controlGUIPrompts("close");
+				//wersja 3-wirnikowa
+				oEnigma = new Enigma,
+				plugboard = new Plugboard(),
+				r1 = new Rotor(1,"fast"),
+				r2 = new Rotor(2,"middle"),
+				r3 = new Rotor(3,"slow"),
+				r4 = new Rotor(9,"forth"), // wirnik "duch"
+				ref = new Reflector(2),
+				aPlugSetting = [3,2,1,0,4,5,6,7,8,9,10,11,12,13,14,15,16,18,17,19,25,21,22,23,24,20];
+				
+				plugboard.rewire(aPlugSetting);
+				r1.set(0,2);
+				r2.set(0,23);
+				r3.set(0,10);
+				r4.set(0,0);
+				
+				oEnigma.preset(r1, r2, r3, r4, ref, plugboard);
+				setContactsOnPlugboard(plugboard);
+				setContactsPositionOnRotor(r1);
+				setRingPositionOnRotor(r1);
+				setContactsPositionOnRotor(r2);
+				setRingPositionOnRotor(r2);
+				setContactsPositionOnRotor(r3);
+				setRingPositionOnRotor(r3);
+				setContactsPositionOnRotor(r4);
+				setRingPositionOnRotor(r4);
+					
+			break;
+		}
 		
-		/* TYLKO DLA DEBUGGERA!
-		
-		console.log("Naciśnięto ");
-		
-		*/
 		return action;
 	},
 	controlGUIPrompts = function(command) {
 		/*
 			Funkcja obsługi zachowania GUI dla akcji ustawianych w kontrolerze handleActions().
 			
-			UWAGA! Funkcja przyjmuje następujące dane wejściowe:
-			1. Wyraźnie zadany argument command, JEŻELI wywołana jawnie w kodzie,
-			LUB
-			2. [DEPRECATED] polega na wartości Element.hash, JEŻELI wywołana za pomocą procedury obsługi zdarzenia jako funkcja do obsługi zdarzenia.
 		*/
 		
 		// ### Czyszczenie stanu ekranów
-	/* 	oInitScreen.setAttribute("mode", "off");
-		oContinueScreen.setAttribute("mode", "off");
-		oPauseScreen.setAttribute("mode", "off");
-		oAbortScreen.setAttribute("mode", "off");
-		oEndScreen.setAttribute("mode", "off");
-		oStoreHiscore.setAttribute("mode", "off");
-		oSettings.setAttribute("mode", "off");
-		oScoreboard.setAttribute("mode", "off");
-		oRules.setAttribute("mode", "off");
-		oControls.setAttribute("mode", "off");
+		oGallery.setAttribute("mode", "off");
+		oManual.setAttribute("mode", "off");
 		oAbout.setAttribute("mode", "off");
-		oAboutApp.setAttribute("mode", "off");
+		/*
+		//To się może przydać na późniejszym etapie prac, TODO
+		oSettings.setAttribute("mode", "off");
 		oTranslate.setAttribute("mode", "off");
 		oCodebase.setAttribute("mode", "off");
 		oLicence.setAttribute("mode", "off");
+		*/
 		
-		### Lista obsługiwanych ekranów dla zdarzeń ### 
+		// ### Lista obsługiwanych ekranów dla zdarzeń ### 
 		oOverlay.setAttribute("mode", "off");
-		oPromptsWrapper.setAttribute("mode", "on");
-		oTicker.setAttribute("mode", "on");
+		oHeadline.setAttribute("mode", "on");
 		
 		switch(command) {
-			case "newplayer": //ekran powitalny nowego gracza zaraz po intrze (TODO: intro gry)
-				oTicker.firstChild.nodeValue = oGamePrompts.newGame;
-				//oOverlay.setAttribute("mode", "off");
-				//oPromptsWrapper.setAttribute("mode", "on");
-				//oTicker.setAttribute("mode", "on");
-				oInitScreen.setAttribute("mode", "on");
-			break;
-			
-			case "oldplayer": //ekran powitalny stałego gracza zaraz po intrze 
-				oTicker.firstChild.nodeValue = oGamePrompts.continueGame;
-				//oOverlay.setAttribute("mode", "off");
-				//oPromptsWrapper.setAttribute("mode", "on");
-				//oTicker.setAttribute("mode", "on");
-				oContinueScreen.setAttribute("mode", "on");
-			break;
-			
-			case "newgame": //[DEPRECATED: TO SAMO ROBI "resume"] stan gry: nowa runda rozgrywki (pierwsza lub kolejna)
-			//TODO: zaprojektować przepływ sterowania od stanu "init"/"endgame" do stanu "newgame"
-				oOverlay.setAttribute("mode", "off");
-				oPromptsWrapper.setAttribute("mode", "off");
-				oTicker.setAttribute("mode", "off");
-				oInitScreen.setAttribute("mode", "off");
-			break;
-			
-			case "pause": //grę spauzowano
-				oWell.style.display = "none";
+			case "select": //pokaż ekran wyboru maszyn
 				oOverlay.setAttribute("mode", "on");
-				//oPromptsWrapper.setAttribute("mode", "on");
-				//oTicker.setAttribute("mode", "on");
-				oTicker.firstChild.nodeValue = oGamePrompts.pause;
-				oPauseScreen.setAttribute("mode", "on");
-			break;
-					
-			case "resume": //grę wznowiono po pauzie
-				oWell.style.display = "block";
-				oOverlay.setAttribute("mode", "off");
-				oPromptsWrapper.setAttribute("mode", "off");
-				oTicker.setAttribute("mode", "off");
-				oPauseScreen.setAttribute("mode", "off");
+				oHeadline.firstChild.nodeValue = oTicker.selectMachine;
+				oGallery.setAttribute("mode", "on");
 			break;
 			
-			case "endgame": //monit o potwierdzenie zakończenia gry
+			case "about": //pokaż artykuł o oryginalnej Enigmie
 				oOverlay.setAttribute("mode", "on");
-				//oPromptsWrapper.setAttribute("mode", "on");
-				//oTicker.setAttribute("mode", "on");
-				oTicker.firstChild.nodeValue = oGamePrompts.abortGameTicker;
-				oAbortScreen.setAttribute("mode", "on");
-			break;
-			
-			case "gameover": //gra się zakończyła
-				oOverlay.setAttribute("mode", "on");
-				//oPromptsWrapper.setAttribute("mode", "on");
-				//oTicker.setAttribute("mode", "on");
-				oTicker.firstChild.nodeValue = oGamePrompts.gameOver;
-				oEndScreen.setAttribute("mode", "on");
-			break;
-			
-			case "storehiscore": //wpisz się na listę najlepszych wyników
-				oTicker.firstChild.nodeValue = oGamePrompts.enterHiScore;
-				//oTicker.setAttribute("mode", "on");
-				oStoreHiscore.setAttribute("mode", "on");
-			break;
-			
-			case "settings": //pokaż ekran ustawień
-				oOverlay.setAttribute("mode", "on");
-				oTicker.firstChild.nodeValue = oGamePrompts.settings;
-				//oTicker.setAttribute("mode", "on");
-				//oPromptsWrapper.setAttribute("mode", "on");
-				oSettings.setAttribute("mode", "on");
-			break;
-			
-			case "scoreboard": //pokaż tablicę najlepszych wyników
-				oTicker.firstChild.nodeValue = oGamePrompts.showHiScores;
-				//oTicker.setAttribute("mode", "on");
-				oScoreboard.setAttribute("mode", "on");
-			break;
-			
-			case "rules": //pokaż zasady gry
-				oTicker.firstChild.nodeValue = oGamePrompts.rules;
-				//oTicker.setAttribute("mode", "on");
-				oRules.setAttribute("mode", "on");
-			break;
-
-			case "controls": //pokaż klawiszologię
-				oTicker.firstChild.nodeValue = oGamePrompts.controls;
-				//oTicker.setAttribute("mode", "on");
-				oControls.setAttribute("mode", "on");
-			break;
-			
-			case "about": //pokaż artykuł o oryginalnym Tetrisie
-				oTicker.firstChild.nodeValue = oGamePrompts.about;oPromptsWrapper.setAttribute("mode", "opaque");
-				//oTicker.setAttribute("mode", "on");
+				oHeadline.firstChild.nodeValue = oTicker.originalEnigma;
 				oAbout.setAttribute("mode", "on");
 			break;
-			
-			case "aboutapp": //pokaż info o tej aplikacji
-				oTicker.firstChild.nodeValue = oGamePrompts.aboutapp;
-				//oTicker.setAttribute("mode", "on");
-				oAboutApp.setAttribute("mode", "on");
+
+			case "manual": //pokaż instrukcję obsługi
+				console.log("manual");
+				oOverlay.setAttribute("mode", "on");
+				oHeadline.firstChild.nodeValue = oTicker.manual;
+				oManual.setAttribute("mode", "on");
 			break;
 			
+			case "protocol": //włącz tryb Protocol
+				oProtocolModeIndicator.setAttribute("lit", "yes");
+				oFreehandModeIndicator.setAttribute("lit", "no");
+			break;	
+
+			case "freehand": //włącz tryb Freehand
+				oProtocolModeIndicator.setAttribute("lit", "no");
+				oFreehandModeIndicator.setAttribute("lit", "yes");
+			break;
+			
+			case "close": //zamknij panele overlay
+				oOverlay.setAttribute("mode", "off");;
+			break;
+			/*
 			case "translate": //pokaż ekran zachęcający do przetłumaczenia aplikacji
-				oTicker.firstChild.nodeValue = oGamePrompts.translate;
-				//oTicker.setAttribute("mode", "on");
+				oHeadline.firstChild.nodeValue = oGamePrompts.translate;
+				//oHeadline.setAttribute("mode", "on");
 				oTranslate.setAttribute("mode", "on");
 			break;
 			
 			case "codebase": //pokaż ekran z informacją o kodzie do pobrania
-				oTicker.firstChild.nodeValue = oGamePrompts.codebase;
-				//oTicker.setAttribute("mode", "on");
+				oHeadline.firstChild.nodeValue = oGamePrompts.codebase;
+				//oHeadline.setAttribute("mode", "on");
 				oCodebase.setAttribute("mode", "on");
 			break;
 			
 			case "copyright": //pokaż ekran z informacją o licencji
-				oTicker.firstChild.nodeValue = oGamePrompts.copyright;
-				//oTicker.setAttribute("mode", "on");
+				oHeadline.firstChild.nodeValue = oGamePrompts.copyright;
+				//oHeadline.setAttribute("mode", "on");
 				oLicence.setAttribute("mode", "on");
-			break;
-		}*/
+			break; */
+		}
 		return;
 	};
+	
+	//aktualna maszyna
+	var oEnigma = new Enigma,
+	plugboard = new Plugboard(),
+	r1 = new Rotor(6,"fast"),
+	r2 = new Rotor(7,"middle"),
+	r3 = new Rotor(8,"slow"),
+	r4 = new Rotor(9,"forth"), //aktualnie wirnik "duch"
+	ref = new Reflector(2),
+	aPlugSetting = [3,2,1,0,4,5,6,7,8,9,10,11,12,13,14,15,16,18,17,19,25,21,22,23,24,20];
+	
+	plugboard.rewire(aPlugSetting);
+	r1.set(0,20);
+	r2.set(0,25);
+	r3.set(0,16);
+	r4.set(5,0);
+
+	oEnigma.preset(r1, r2, r3, r4, ref, plugboard);
+	setContactsOnPlugboard(plugboard);
+	setContactsPositionOnRotor(r1);
+	setRingPositionOnRotor(r1);
+	setContactsPositionOnRotor(r2);
+	setRingPositionOnRotor(r2);
+	setContactsPositionOnRotor(r3);
+	setRingPositionOnRotor(r3);
+	setContactsPositionOnRotor(r4);
+	setRingPositionOnRotor(r4);
+
+	//wyświetlanie zaktualizowanych podpisów na elementach maszyny
+	oFastRotorDescLabel.textContent = "Szybki wirnik typu "+r1.name;
+	oMiddleRotorDescLabel.textContent = "Środkowy wirnik typu "+r2.name;
+	oSlowRotorDescLabel.textContent = "Wolny wirnik typu "+r3.name;
+	oReflectorDescLabel.textContent = ref.shortname;
+
+	//document.addEventListener("keydown", handleActions, true);
+	
+	// ### Ustawianie nazw zgodnie z językiem ###
+	oPresetSwitch.firstChild.textContent = oInterface.machineType;
+	oFreehandModeIndicator.firstChild.textContent = oInterface.freehandMode;
+	oProtocolModeIndicator.firstChild.textContent = oInterface.protocolMode;
+	oControlsSwitch.firstChild.textContent = oInterface.howto;
+	oAboutSwitch.firstChild.textContent = oInterface.about;
+	oCloseButton.firstChild.textContent = oInterface.close;
 	

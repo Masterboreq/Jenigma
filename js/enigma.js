@@ -182,10 +182,11 @@ step = function() {
 };
 
 set = function(iRingstellung, iLetter) {
-	/*funkcja jest metodą obiektów wirników (Rotor). Służy do ustawienia początkowych pozycji wirnika. Funkcja ustawia następujące właściwości obiektów:
-	 - this.currentOffset, czyli, o ile prawy styk A-01 wirnika przesunął się względem styku wyjściowego A-01 stojana.
-	 - this.currentPosition, czyli który styk znajduje się pod okienkiem literowym Enigmy na tym wirniku.
-	 - this.currentNotchOffset, czyli za ile kroków nastąpi pozycja obrotu kolejnego wirnika 
+	/*
+		Funkcja jest metodą obiektów wirników (Rotor). Służy do ustawienia początkowych pozycji wirnika. Funkcja ustawia następujące właściwości obiektów:
+		 - this.currentOffset, czyli, o ile prawy styk A-01 wirnika przesunął się względem styku wyjściowego A-01 stojana.
+		 - this.currentPosition, czyli który styk znajduje się pod okienkiem literowym Enigmy na tym wirniku.
+		 - this.currentNotchOffset, czyli za ile kroków nastąpi pozycja obrotu kolejnego wirnika 
 	*/
 	
 	//zawsze resetuj zmienne!
@@ -329,6 +330,7 @@ encipher = function(iCharCode) {
 	// ### faza propagacji sygnału ###
 	this.plugboard.send(iCharCode); // (1)
 		//console.log("Wyjście łącznicy: "+Letters[this.plugboard.output]);
+		highlightPlugboardLetters(this.plugboard, 0);
 		hightlightLetterStrips(oContactStrips[0], this.plugboard.output, 0);
 	this.rotor1.code(this.plugboard.output, false); //(2)
 		//console.log("Wyjście wirnika1: "+Letters[this.rotor1.output]);
@@ -344,13 +346,19 @@ encipher = function(iCharCode) {
 		hightlightLetterStrips(this.rotor3.guiContactsLeft, this.rotor3.output, 0);
 		hightlightLetterStrips(oContactStrips[3], this.rotor3.output, 0);
 	this.rotor4.code(this.rotor3.output, false); //(5)
+		hightlightLetterStrips(this.rotor4.guiContactsRight, this.rotor3.output, 0);
+		hightlightLetterStrips(this.rotor4.guiContactsLeft, this.rotor4.output, 0);
+		hightlightLetterStrips(oContactStrips[4], this.rotor4.output, 0);
 	
 	// ### nawrót sygnału przez reflektor ###
 	this.reflector.send(this.rotor4.output); //(6)
-		hightlightLetterStrips(oContactStrips[3], this.reflector.output, 1);
+		hightlightLetterStrips(oContactStrips[4], this.reflector.output, 1);
 	
 	// ### faza powrotu sygnału ###
 	this.rotor4.code(this.reflector.output, true); //(7)
+		hightlightLetterStrips(this.rotor4.guiContactsLeft, this.reflector.output, 1);
+		hightlightLetterStrips(this.rotor4.guiContactsRight, this.rotor4.output, 1);
+		hightlightLetterStrips(oContactStrips[3], this.rotor4.output, 1);
 	this.rotor3.code(this.rotor4.output, true); //(8)
 		hightlightLetterStrips(this.rotor3.guiContactsLeft, this.rotor4.output, 1);
 		hightlightLetterStrips(this.rotor3.guiContactsRight, this.rotor3.output, 1);
@@ -364,6 +372,7 @@ encipher = function(iCharCode) {
 		hightlightLetterStrips(this.rotor1.guiContactsRight, this.rotor1.output, 1);
 		hightlightLetterStrips(oContactStrips[0], this.rotor1.output, 1);
 	this.plugboard.send(this.rotor1.output);
+		highlightPlugboardLetters(this.plugboard, 1);
 	
 	this.output.charCode = this.plugboard.output;
 	this.output.charName = Letters[this.plugboard.output];
@@ -385,14 +394,14 @@ rewire = function(aWiring) {
 },
 
 sendChar = function(iCharCode) {
+	this.input = iCharCode;
 	this.output = this.wiring[iCharCode];
-	//console.log("Reflector output: "+this.output);
 	return this.output;
 },
 
 toggleDefault = function() {
 	return this.wiring = this.defaultWiring;
-};
+},
 
 preset = function(oRotor1, oRotor2, oRotor3, oRotor4 = new Rotor(11), oReflector, oPlugboard = 	new Plugboard) {
 	var i =3;
@@ -409,7 +418,7 @@ preset = function(oRotor1, oRotor2, oRotor3, oRotor4 = new Rotor(11), oReflector
 	}
 	this.reflector = oReflector;
 	this.plugboard = oPlugboard;
-}
+};
 
 function Plugboard() {
 	this.defaultWiring = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]; //domyślny układ braku łącznicy; żadna litera nie jest zamieniana
@@ -420,7 +429,8 @@ function Plugboard() {
 	
 	this.send = sendChar; //metoda do komutacji przesyłanego sygnału
 	
-	this.output = null; //do tej zmiennej będzie zapisywać metoda this.send()
+	this.intput = null; //do tej zmiennej będzie zapisywać metoda this.send() - zmienna przechowuje aktualnie wprowadzony znak (zmienna istnieje na potrzeby funkcji highlightPlugboardLetters())
+	this.output = null; //do tej zmiennej będzie zapisywać metoda this.send()- zmienna przechowuje aktualnie skomutowany znak
 	
 	return;
 };
