@@ -90,14 +90,14 @@ Rotors = {
 			name: "&gamma;",
 			rightContacts: [5,18,14,10,0,13,20,4,17,7,12,1,19,8,24,2,22,11,16,15,25,23,21,6,9,3],
 			leftContacts: [4,11,15,25,7,0,23,9,13,24,3,17,10,5,2,19,18,8,1,12,6,22,16,21,14,20],
-			isMoveable: false	
+			isMoveable: false
 		},
 		11: {
 			//podły hack dla czwartego "wirtualnego" wirnika w 3-wirnikowych wersjach maszyny. Pozwala uniknąć używania instrukcji warunkowych sprawdzających obecność 4. wirnika.
 			name: "ghost",
 			rightContacts: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],
 			leftContacts: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],
-			isMoveable: false	
+			isMoveable: false
 		}
 	}
 },
@@ -331,46 +331,46 @@ encipher = function(iCharCode) {
 	this.plugboard.send(iCharCode); // (1)
 		//console.log("Wyjście łącznicy: "+Letters[this.plugboard.output]);
 		highlightPlugboardLetters(this.plugboard, 0);
-		hightlightLetterStrips(oContactStrips[0], this.plugboard.output, 0);
+		hightlightVirtualStrips(oContactStrips[0], this.plugboard.output, 0);
 	this.rotor1.code(this.plugboard.output, false); //(2)
 		//console.log("Wyjście wirnika1: "+Letters[this.rotor1.output]);
 		hightlightLetterStrips(this.rotor1.guiContactsRight, this.plugboard.output, 0);
 		hightlightLetterStrips(this.rotor1.guiContactsLeft, this.rotor1.output, 0);
-		hightlightLetterStrips(oContactStrips[1], this.rotor1.output, 0);
+		hightlightVirtualStrips(oContactStrips[1], this.rotor1.output, 0);
 	this.rotor2.code(this.rotor1.output, false); //(3)
 		hightlightLetterStrips(this.rotor2.guiContactsRight, this.rotor1.output, 0);
 		hightlightLetterStrips(this.rotor2.guiContactsLeft, this.rotor2.output, 0);
-		hightlightLetterStrips(oContactStrips[2], this.rotor2.output, 0);
+		hightlightVirtualStrips(oContactStrips[2], this.rotor2.output, 0);
 	this.rotor3.code(this.rotor2.output, false); //(4)
 		hightlightLetterStrips(this.rotor3.guiContactsRight, this.rotor2.output, 0);
 		hightlightLetterStrips(this.rotor3.guiContactsLeft, this.rotor3.output, 0);
-		hightlightLetterStrips(oContactStrips[3], this.rotor3.output, 0);
+		hightlightVirtualStrips(oContactStrips[3], this.rotor3.output, 0);
 	this.rotor4.code(this.rotor3.output, false); //(5)
 		hightlightLetterStrips(this.rotor4.guiContactsRight, this.rotor3.output, 0);
 		hightlightLetterStrips(this.rotor4.guiContactsLeft, this.rotor4.output, 0);
-		hightlightLetterStrips(oContactStrips[4], this.rotor4.output, 0);
+		hightlightVirtualStrips(oContactStrips[4], this.rotor4.output, 0);
 	
 	// ### nawrót sygnału przez reflektor ###
 	this.reflector.send(this.rotor4.output); //(6)
-		hightlightLetterStrips(oContactStrips[4], this.reflector.output, 1);
+		hightlightVirtualStrips(oContactStrips[4], this.reflector.output, 1);
 	
 	// ### faza powrotu sygnału ###
 	this.rotor4.code(this.reflector.output, true); //(7)
 		hightlightLetterStrips(this.rotor4.guiContactsLeft, this.reflector.output, 1);
 		hightlightLetterStrips(this.rotor4.guiContactsRight, this.rotor4.output, 1);
-		hightlightLetterStrips(oContactStrips[3], this.rotor4.output, 1);
+		hightlightVirtualStrips(oContactStrips[3], this.rotor4.output, 1);
 	this.rotor3.code(this.rotor4.output, true); //(8)
 		hightlightLetterStrips(this.rotor3.guiContactsLeft, this.rotor4.output, 1);
 		hightlightLetterStrips(this.rotor3.guiContactsRight, this.rotor3.output, 1);
-		hightlightLetterStrips(oContactStrips[2], this.rotor3.output, 1);
+		hightlightVirtualStrips(oContactStrips[2], this.rotor3.output, 1);
 	this.rotor2.code(this.rotor3.output, true); //(9)
 		hightlightLetterStrips(this.rotor2.guiContactsLeft, this.rotor3.output, 1);
 		hightlightLetterStrips(this.rotor2.guiContactsRight, this.rotor2.output, 1);
-		hightlightLetterStrips(oContactStrips[1], this.rotor2.output, 1);
+		hightlightVirtualStrips(oContactStrips[1], this.rotor2.output, 1);
 	this.rotor1.code(this.rotor2.output, true); //(10)
 		hightlightLetterStrips(this.rotor1.guiContactsLeft, this.rotor2.output, 1);
 		hightlightLetterStrips(this.rotor1.guiContactsRight, this.rotor1.output, 1);
-		hightlightLetterStrips(oContactStrips[0], this.rotor1.output, 1);
+		hightlightVirtualStrips(oContactStrips[0], this.rotor1.output, 1);
 	this.plugboard.send(this.rotor1.output);
 		highlightPlugboardLetters(this.plugboard, 1);
 	

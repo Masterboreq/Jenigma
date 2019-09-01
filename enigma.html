@@ -19,7 +19,7 @@
 				<ul>
 					<li id="m1"><img class="machine-thumbnail" src="img/enigma-g.jpg" /><h3>3-wirnikowa</h3>
 					</li>
-					<li><img class="machine-thumbnail" src="img/enigma-g.jpg" /><h3>4-wirnikowa</h3>
+					<li id="m2"><img class="machine-thumbnail" src="img/enigma-g.jpg" /><h3>4-wirnikowa</h3>
 					</li>
 					<li><img class="machine-thumbnail" src="img/enigma-g.jpg" /><h3>Twoja własna</h3>
 					</li>
@@ -360,9 +360,9 @@
 				</ul>
 			</div>
 		</div><!-- END slow rotor -->
-		<div class="window" id="window-r4"></div>
-		<span class="description" id="forth-rotor-desc">Forth</span>
-		<div class="contacts-strip" id="contacts-to-forth">
+		<div class="window" id="window-r4" isActive="true"></div>
+		<span class="description" id="fourth-rotor-desc">Fourth</span>
+		<div class="contacts-strip" id="contacts-to-forth" isActive="true">
 			<ul class="contacts">
 				<li class="">&ndash;N&ndash;</li>
 				<li class="">&ndash;M&ndash;</li>
@@ -392,9 +392,8 @@
 				<li class="">&ndash;O&ndash;</li>
 			</ul>
 		</div>
-		<!-- BEGINNING forth rotor 
-		 TODO: póki co tani hack, żeby skrypt nie wyrzucał błędu -->
-		<div class="rotor" id="forth" style="display: block">
+		<!-- BEGINNING fourth rotor -->
+		<div class="rotor" id="forth" isActive="true">
 			<ul class="contacts-on-rotor-right-side">
 				<li lit="no" class="">N</li>
 				<li lit="no" class="">M</li>
