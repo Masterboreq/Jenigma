@@ -45,6 +45,7 @@ document.addEventListener("keydown", handleActions, true);
 
 // ### Akcje przycisków wyboru maszyny
 oM1.addEventListener("click", handleActions, true);
+oM2.addEventListener("click", handleActions, true);
 
 // ### Akcje przycisków menu głównego
 oPresetSwitch.addEventListener("click", handleActions, true);
@@ -61,8 +62,10 @@ oCloseButton.addEventListener("click", handleActions, true);
 r1.guiElement.addEventListener("mouseover", handleActions, true);
 r2.guiElement.addEventListener("mouseover", handleActions, true);
 r3.guiElement.addEventListener("mouseover", handleActions, true);
+r4.guiElement.addEventListener("mouseover", handleActions, true);
 
 r1.guiElement.addEventListener("mouseout", handleActions, true);
 r2.guiElement.addEventListener("mouseout", handleActions, true);
 r3.guiElement.addEventListener("mouseout", handleActions, true);
+r4.guiElement.addEventListener("mouseout", handleActions, true);
 

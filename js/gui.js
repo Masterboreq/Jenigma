@@ -13,6 +13,7 @@ var oEvent = window.event,
 	oFastRotorDescLabel = document.getElementById("fast-rotor-desc"),
 	oMiddleRotorDescLabel = document.getElementById("middle-rotor-desc"),
 	oSlowRotorDescLabel = document.getElementById("slow-rotor-desc"),
+	oFourthRotorDescLabel = document.getElementById("fourth-rotor-desc"),
 	oReflectorDescLabel = document.getElementById("reflector-desc"),
 	oFreehandModeIndicator = document.getElementById("fh-indicator"),
 	oProtocolModeIndicator = document.getElementById("prtcl-indicator"),
@@ -31,6 +32,8 @@ var oEvent = window.event,
 		
 	//pozycje menu parku maszynowego
 	oM1 = document.getElementById("m1"),
+	oM2 = document.getElementById("m2"),
+	reLetterOnStrip = /[A-Z]/,
 	
 	hightlightLetterStrips = function(oLetterList, iContact, bDirection=0) {
 		/*
@@ -38,7 +41,8 @@ var oEvent = window.event,
 			Funkcja rozróżnia kierunek przepływu sygnału (false lub 0 dla fazy propagacji; true lub 1 dla fazy powrotu).
 		*/
 		var j = (26+(13-iContact))%26;
-		if(bDirection) {
+		
+		if(bDirection) {			
 			oLetterList.children[j].setAttribute("lit","green");
 		}
 		else {
@@ -49,6 +53,41 @@ var oEvent = window.event,
 			}
 			while(++j<26);
 			j = (26+(13-iContact))%26;
+			oLetterList.children[j].setAttribute("lit","red");
+		}
+		return false;
+	},	
+	hightlightVirtualStrips = function(oLetterList, iContact, bDirection=0) {
+		/*
+			Funkcja służy do poświetlania wirtualnego styku (tego pomiędzy wirnikami) przez który aktualnie przepływa sygnał.
+			Funkcja rozróżnia kierunek przepływu sygnału (false lub 0 dla fazy propagacji; true lub 1 dla fazy powrotu).
+			
+			UWAGA! Obiekt RegEx "reLetterOnStrip" został zdefiniowany u szczytu pliku.
+		*/
+		var j = (26+(13-iContact))%26,
+			sSpecialLetter = "",
+			aRegTempResult = [];
+		
+		if(bDirection) {
+			sSpecialLetter = oLetterList.children[j].textContent;
+			aRegTempResult = reLetterOnStrip.exec(sSpecialLetter);
+			oLetterList.children[j].textContent = aRegTempResult[0] + String.fromCharCode(9205);
+			oLetterList.children[j].setAttribute("lit","green");
+		}
+		else {
+			j = 0;
+			do {
+				//reset (wygaszanie i przywracanie) liter i dywizów po poprzednim przejściu sygnału
+				sSpecialLetter = oLetterList.children[j].textContent;
+				aRegTempResult = reLetterOnStrip.exec(sSpecialLetter);
+				oLetterList.children[j].textContent = "-" + aRegTempResult[0] + "-" ;
+				oLetterList.children[j].setAttribute("lit","no");
+			}
+			while(++j<26);
+			j = (26+(13-iContact))%26;			
+			sSpecialLetter = oLetterList.children[j].textContent;
+			aRegTempResult = reLetterOnStrip.exec(sSpecialLetter);
+			oLetterList.children[j].textContent = String.fromCharCode(9204) + aRegTempResult[0];
 			oLetterList.children[j].setAttribute("lit","red");
 		}
 		return false;
@@ -359,18 +398,18 @@ handleActions = function(oEvent) {
 			//TODO: zawrzeć logikę zdarzenia w controlGUIPrompts()
 			switch(action) {
 				case "fast":
-					//JEŻELI w trybie ustawiania (freehand lub protocol), to UMOŻLIW edycję
+					// TOCONS: JEŻELI w trybie ustawiania (freehand lub protocol), to UMOŻLIW edycję
 					//jeśli NIE, wyświetl etykietę
 					oFastRotorDescLabel.style.display = "inline-block";
 				break;
 				case "middle":
-				//
-				
 					oMiddleRotorDescLabel.style.display = "inline-block";
 				break;
 				case "slow":
-				//
 					oSlowRotorDescLabel.style.display = "inline-block";
+				break;
+				case "forth":
+					oFourthRotorDescLabel.style.display = "inline-block";
 				break;
 			}
 		}
@@ -391,6 +430,9 @@ handleActions = function(oEvent) {
 				case "slow":
 				//
 					oSlowRotorDescLabel.style.display = "none";
+				break;
+				case "forth":
+					oFourthRotorDescLabel.style.display = "none";
 				break;
 			}
 		}
@@ -467,7 +509,47 @@ handleActions = function(oEvent) {
 				setRingPositionOnRotor(r3);
 				setContactsPositionOnRotor(r4);
 				setRingPositionOnRotor(r4);
-					
+				
+				//wyświetlanie zaktualizowanych podpisów na elementach maszyny
+				oFastRotorDescLabel.textContent = "Szybki wirnik typu "+r1.name;
+				oMiddleRotorDescLabel.textContent = "Środkowy wirnik typu "+r2.name;
+				oSlowRotorDescLabel.textContent = "Wolny wirnik typu "+r3.name;
+				oReflectorDescLabel.textContent = ref.shortname;
+			break;			
+			case "m2": controlGUIPrompts("close");
+				//wersja 4-wirnikowa
+				oEnigma = new Enigma,
+				plugboard = new Plugboard(),
+				r1 = new Rotor(3,"fast"),
+				r2 = new Rotor(2,"middle"),
+				r3 = new Rotor(4,"slow"),
+				r4 = new Rotor(7,"forth"), // wirnik "duch"
+				ref = new Reflector(4),
+				aPlugSetting = [3,2,1,0,4,5,6,7,8,9,10,11,12,13,14,15,16,18,17,19,25,21,22,23,24,20];
+				
+				plugboard.rewire(aPlugSetting);
+				r1.set(0,12);
+				r2.set(0,15);
+				r3.set(0,7);
+				r4.set(0,4);
+				
+				oEnigma.preset(r1, r2, r3, r4, ref, plugboard);
+				setContactsOnPlugboard(plugboard);
+				setContactsPositionOnRotor(r1);
+				setRingPositionOnRotor(r1);
+				setContactsPositionOnRotor(r2);
+				setRingPositionOnRotor(r2);
+				setContactsPositionOnRotor(r3);
+				setRingPositionOnRotor(r3);
+				setContactsPositionOnRotor(r4);
+				setRingPositionOnRotor(r4);
+				
+				//wyświetlanie zaktualizowanych podpisów na elementach maszyny
+				oFastRotorDescLabel.textContent = "Szybki wirnik typu "+r1.name;
+				oMiddleRotorDescLabel.textContent = "Środkowy wirnik typu "+r2.name;
+				oSlowRotorDescLabel.textContent = "Wolny wirnik typu "+r3.name;
+				oFourthRotorDescLabel.textContent = "Czwarty wirnik typu "+r4.name;
+				oReflectorDescLabel.textContent = ref.shortname;
 			break;
 		}
 		
@@ -556,7 +638,7 @@ handleActions = function(oEvent) {
 	r1 = new Rotor(6,"fast"),
 	r2 = new Rotor(7,"middle"),
 	r3 = new Rotor(8,"slow"),
-	r4 = new Rotor(9,"forth"), //aktualnie wirnik "duch"
+	r4 = new Rotor(11,"forth"), //aktualnie wirnik "duch"
 	ref = new Reflector(2),
 	aPlugSetting = [3,2,1,0,4,5,6,7,8,9,10,11,12,13,14,15,16,18,17,19,25,21,22,23,24,20];
 	
@@ -581,9 +663,8 @@ handleActions = function(oEvent) {
 	oFastRotorDescLabel.textContent = "Szybki wirnik typu "+r1.name;
 	oMiddleRotorDescLabel.textContent = "Środkowy wirnik typu "+r2.name;
 	oSlowRotorDescLabel.textContent = "Wolny wirnik typu "+r3.name;
+	oFourthRotorDescLabel.textContent = "Czwarty wirnik typu "+r4.name;
 	oReflectorDescLabel.textContent = ref.shortname;
-
-	//document.addEventListener("keydown", handleActions, true);
 	
 	// ### Ustawianie nazw zgodnie z językiem ###
 	oPresetSwitch.firstChild.textContent = oInterface.machineType;

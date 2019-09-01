@@ -190,7 +190,7 @@ div.menu-item[lit="yes"] {
 #middle-rotor-desc {
 	position: absolute;
 	top: 40px;
-	left: 480px;
+	left: 580px;
 	display: none;
 }
 
@@ -200,13 +200,26 @@ div.menu-item[lit="yes"] {
 #slow-rotor-desc {
 	position: absolute;
 	top: 40px;
-	left: 280px;
+	left: 380px;
 }
 
 #forth {
+	/*Wiem, tutaj jest literówka, ale trudno. */
 	border: 2px solid yellow;
 	left: 220px;
 	width: 90px;
+}
+#fourth-rotor-desc {
+	position: absolute;
+	top: 40px;
+	left: 200px;
+}
+
+
+#slow-rotor-desc {
+	position: absolute;
+	top: 40px;
+	left: 280px;
 }
  
 .rotor {
