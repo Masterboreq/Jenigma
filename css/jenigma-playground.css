@@ -22,6 +22,47 @@ ul {
 	clear: both;
 }
 
+/* Overlay ogólnego zastosowania pod wyświetlanie komunikatów */
+#overlay {
+	background: rgba(0, 0, 0, .87);
+	width: 100%;
+	height: 100%;
+	border: none;
+	z-index: 2;
+	position: fixed;
+	color: #fff;
+}
+#overlay[mode="off"] {
+	display: none;
+}
+#overlay[mode="on"] {
+	display: block;
+}
+/* Ticker ogólnego zastosowania pod wyświetlanie komunikatów */
+#ticker {
+	border: 1px dashed pink;
+	width: 50%;
+	height: 50px;
+	background: rgba(0,0,0, .95);
+	font-family: sans-serif;
+	font-size: 36px;
+	float: left;
+}
+#ticker[mode="off"] {
+	display: none;
+}
+
+#ticker[mode="on"] {
+	display: block;
+}
+
+#close-button {
+	border: 1px dotted white;
+	width: 10%;
+	height: 50px;
+	float: right;
+}
+
 #header {
 	width: 99.9%;
 	height: 40px;
@@ -30,6 +71,52 @@ ul {
 	left: 0px;
 	border: 1 px solid red;
 	background-color: yellow;
+}
+#machine-gallery {
+	padding: 20px;
+}
+#machine-gallery[mode="on"] {
+	display: block;
+}
+#machine-gallery[mode="off"] {
+	display: none;
+}
+
+#machine-gallery ul li {
+	display: inline-block;
+	margin-right: 50px;
+	border: 1px solid #ddd;
+	width: 120px;
+	height: 120px;
+	text-align: center;
+}
+
+#machine-gallery ul li:hover {
+	border: 1px solid red;
+	background-color: rgb(255,255,255,.5);
+}
+
+#machine-gallery h3 {
+	font-size: 12px;
+}
+
+.machine-thumbnail {
+	width: 96px;
+	height: 96px;
+}
+
+#manual[mode="on"] {
+	display: block;
+}
+#manual[mode="off"] {
+	display: none;
+}
+
+#about-enigma[mode="on"] {
+	display: block;
+}
+#about-enigma[mode="off"] {
+	display: none;
 }
 
 .menu-item {
@@ -45,13 +132,17 @@ ul {
 	height: 100%;
 }
 
-div[lit="no"] {
+#adjustments {
+	width: 80px;	
+}
+
+div.menu-item[lit="no"] {
 	border: 2px solid #fff;
 	color: #fff;
 	background-color: #f00;
 }
 
-div[lit="yes"] {
+div.menu-item[lit="yes"] {
 	border: 2px solid red;
 	color: #fff;
 	background-color: #0f0;	
@@ -59,38 +150,42 @@ div[lit="yes"] {
 
 .window {
 	position: absolute;
-	top: 150px;
+	top: 190px;
 	width: 56px;
 	height: 46px;
 	border: 2px solid #ff26d0;
+	z-index: 1;
 }
 
 #window-r1 {
-	left: 664px;
+	left: 764px;
 }
 
 #window-r2 {
-	left: 464px;
+	left: 564px;
 
 }
 
 #window-r3 {
-	left: 264px;
+	left: 364px;
+}
 
+#window-r4 {
+	left: 234px;
 }
 
 #fast {
-	left: 650px;
+	left: 750px;
 }
 #fast-rotor-desc {
 	position: relative;
 	top: 40px;
-	left: 680px;
+	left: 780px;
 	display: none;
 }
 
 #middle {
-	left: 450px;
+	left: 550px;
 }
 #middle-rotor-desc {
 	position: absolute;
@@ -100,12 +195,18 @@ div[lit="yes"] {
 }
 
 #slow {
-	left: 250px;
+	left: 350px;
 }
 #slow-rotor-desc {
 	position: absolute;
 	top: 40px;
 	left: 280px;
+}
+
+#forth {
+	border: 2px solid yellow;
+	left: 220px;
+	width: 90px;
 }
  
 .rotor {
@@ -120,11 +221,19 @@ div[lit="yes"] {
 .wide-reflector {
 	border: 2px solid green;
 	left: 50px;
+	display: none;
+}
+
+.thin-reflector {
+	border: 2px solid orange;
+	left: 50px;
+	width: 60px;
 }
 
 .stator {
 	border: 2px solid orange;
-	left: 850px;
+	left: 950px;
+	width: 60px
 }
  
 .letter-strip {
@@ -168,16 +277,37 @@ div[lit="yes"] {
 	overflow: hidden;
 }
 
+.input-contacts-on-plugboard, .middle-contacts-on-plugboard, .output-contacts-on-plugboard {
+	width: 20px;
+	border: 1px solid grey;
+	font-size: 18px;
+	line-height: 1.15em;
+	float: left;
+	height: 200px;
+}
+
+.input-contacts-on-plugboard {
+	margin-left: 20px;
+}
+
+.middle-contacts-on-plugboard {	
+	width: 30px;
+}
+
 #contacts-to-fast {
-	left: 816px;
+	left: 916px;
 }
 
 #contacts-to-middle {
-	left: 616px;
+	left: 716px;
 }
 
 #contacts-to-slow {
-	left: 416px;
+	left: 516px;
+}
+
+#contacts-to-forth {
+	left: 316px;
 }
 
 }#contacts-fast-right {
@@ -193,7 +323,8 @@ div[lit="yes"] {
 }
 
 #contacts-to-reflector {
-	left: 216px;
+	left: 186px;
+	border-color: aquamarine;
 }
 
 li[lit="no"] {
@@ -288,7 +419,7 @@ ul.indexes li {
 
 .lamps-panel {
 	border: 1px solid yellow;
-	width: 960px;
+	width: 790px;
 	height: 240px;
 	position: absolute;
 	top: 400px;
@@ -304,14 +435,14 @@ ul.indexes li {
 
 /* ### Panel lampek ###*/
 .lamps-row span {
-	/*margin-left: 20px; 
-	padding-top: 6px;*/
+	/*margin-left: 20px; */
+	padding-top: 5px;
 	display: block;
 	position: absolute;	
 	top: 20px;
 	left: 0px;
 	width: 45px;
-	height: 39px;
+	height: 40px;
 	border-radius: 100%;
 	font-size: 30px;
 	text-align: center;
@@ -324,9 +455,18 @@ ul.indexes li {
 }
 
 .lamps-row span[lit="yes"] {
-	border: 2px solid red;
-	color: #ff7600;
+	border: 2px solid #ffbc00;
+	color: #ab0000;
 	background-color: #fbf533;	
+}
+
+#plugboard {
+	border-width: 1px;
+	position: absolute;
+	width: 160px;
+	height: 240px;
+	top: 400px;
+	left: 850px;
 }
 
 /* # Górny rząd #*/
