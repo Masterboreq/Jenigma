@@ -9,13 +9,38 @@
 		<link rel="stylesheet" href="css/jenigma-playground.css">
 	</head>
 	<body>
+		<div id="overlay" mode="off">
+			<div id="ticker">
+				<h2 id="headline">&nbsp;</h2>
+			</div>
+			<div id="close-button">Zamknij</div>
+			<div class="clearfloat"></div>
+			<div class="" id="machine-gallery" mode="on">
+				<ul>
+					<li id="m1"><img class="machine-thumbnail" src="img/enigma-g.jpg" /><h3>3-wirnikowa</h3>
+					</li>
+					<li><img class="machine-thumbnail" src="img/enigma-g.jpg" /><h3>4-wirnikowa</h3>
+					</li>
+					<li><img class="machine-thumbnail" src="img/enigma-g.jpg" /><h3>Twoja własna</h3>
+					</li>
+				</ul>
+			</div>
+			<div class="" id="about-enigma" mode="on">
+				<p>Historia Enigmy zaczęła się w 19xx roku, gdy &hellip;</p>
+			</div>
+			<div class="" id="manual" mode="off">
+				<p>Oto krótka instrukcja, jak używać Jenigmy.</p>
+			</div>
+		</div>
+		
 		<div id="header">
 			<div  class="menu-item" id="logo">Jenigma</div>
-			<div class="menu-item" ><a class="" href="#presets">Machine type</a></div>
+			<div class="menu-item" id="preset-switch"><a class="" href="#presets">Machine type</a></div>
 			<div class="menu-item" lit="no" id="fh-indicator"><a class="" href="#freehand">Free hand mode</a></div>
+			<div class="menu-item" active="no" id="adjustments"><a class="" href="#adjustments">Ustaw</a></div>
 			<div class="menu-item" lit="no" id="prtcl-indicator"><a class="" href="#protocol">Protocol mode</a></div>
-			<div class="menu-item"><a class="" href="#controls">Controls&amp;manual</a></div>
-			<div class="menu-item"><a class="" href="#about">About Enigma machines</a></div>
+			<div class="menu-item" id="controls-switch"><a class="" href="#controls">Controls&amp;manual</a></div>
+			<div class="menu-item" id="about-switch"><a class="" href="#about">About Enigma machines</a></div>
 			<div class="clearfloat"></div>
 		</div>
 		<!-- BEGINNING stator -->
@@ -335,7 +360,9 @@
 				</ul>
 			</div>
 		</div><!-- END slow rotor -->
-		<div class="contacts-strip" id="contacts-to-reflector">
+		<div class="window" id="window-r4"></div>
+		<span class="description" id="forth-rotor-desc">Forth</span>
+		<div class="contacts-strip" id="contacts-to-forth">
 			<ul class="contacts">
 				<li class="">&ndash;N&ndash;</li>
 				<li class="">&ndash;M&ndash;</li>
@@ -367,7 +394,7 @@
 		</div>
 		<!-- BEGINNING forth rotor 
 		 TODO: póki co tani hack, żeby skrypt nie wyrzucał błędu -->
-		<div class="rotor" id="forth" style="display: none">
+		<div class="rotor" id="forth" style="display: block">
 			<ul class="contacts-on-rotor-right-side">
 				<li lit="no" class="">N</li>
 				<li lit="no" class="">M</li>
@@ -424,10 +451,56 @@
 				<li lit="no" class="">P</li>
 				<li lit="no" class="">O</li>
 			</ul>
+			<div class="letter-strip" id="ring-r3">
+				<ul class="indexes">
+					<li class="letter-offset-4 ascended-3">E</li>
+					<li class="letter-offset-3 ascended-2">D</li>
+					<li class="letter-offset-2 ascended-1">C</li>
+					<li class="letter-offset-1">B</li>
+					<li class="letter-no-offset">A</li>
+					<li class="letter-offset-1">E</li>
+					<li class="letter-offset-2 descended-1">Z</li>
+					<li class="letter-offset-3 descended-2">Y</li>
+					<li class="letter-offset-4 descended-3">X</li>
+				</ul>
+			</div>
+		</div>	
+		<div class="contacts-strip" id="contacts-to-reflector">
+			<ul class="contacts">
+				<li class="">&ndash;N&ndash;</li>
+				<li class="">&ndash;M&ndash;</li>
+				<li class="">&ndash;L&ndash;</li>
+				<li class="">&ndash;K&ndash;</li>
+				<li class="">&ndash;J&ndash;</li>
+				<li class="">&ndash;I&ndash;</li>
+				<li class="">&ndash;H&ndash;</li>
+				<li class="">&ndash;G&ndash;</li>
+				<li class="">&ndash;F&ndash;</li>
+				<li class="">&ndash;E&ndash;</li>
+				<li class="">&ndash;D&ndash;</li>
+				<li class="">&ndash;C&ndash;</li>
+				<li class="">&ndash;B&ndash;</li>
+				<li class="">&ndash;A&ndash;</li>
+				<li class="">&ndash;Z&ndash;</li>
+				<li class="">&ndash;Y&ndash;</li>
+				<li class="">&ndash;X&ndash;</li>
+				<li class="">&ndash;W&ndash;</li>
+				<li class="">&ndash;V&ndash;</li>
+				<li class="">&ndash;U&ndash;</li>
+				<li class="">&ndash;T&ndash;</li>
+				<li class="">&ndash;S&ndash;</li>
+				<li class="">&ndash;R&ndash;</li>
+				<li class="">&ndash;Q&ndash;</li>
+				<li class="">&ndash;P&ndash;</li>
+				<li class="">&ndash;O&ndash;</li>
+			</ul>
 		</div>
 		<!-- BEGINNING wide reflector -->
 		<div class="rotor wide-reflector" id="">
 			<span class="description" id="reflector-desc">Reflektor</span>
+		</div>
+		<div class="rotor thin-reflector" id="">
+			<span class="description" id="reflector-desc">Thin reflector</span>
 		</div>
 		<!-- END wide reflector -->
 		<div class="lamps-panel">
@@ -461,8 +534,51 @@
 				<span lit="no" id="lamp-Z">Z</span>
 			</div>
 		</div>
+		<div class="rotor stator" id="plugboard">
+			<span class="description">Łącznica kablowa</span>
+			<div>
+				<ul class="contacts input-contacts-on-plugboard">
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+				</ul>
+				<ul class="contacts middle-contacts-on-plugboard">
+					<li lit="no" class=""></li>					
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+				</ul>
+				<ul class="contacts output-contacts-on-plugboard">
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+					<li lit="no" class=""></li>
+				</ul>
+				<div class="clearfloat" id=""></div>
+			</div>
+		</div>
 	</body>
-	<script type="text/javascript" src="js/gui.js"></script>
+	<script type="text/javascript" src="js/pl.lang.js"></script>
 	<script type="text/javascript" src="js/enigma.js"></script>
+	<script type="text/javascript" src="js/gui.js"></script>
 	<script type="text/javascript" src="js/application.js"></script>
 </html>
