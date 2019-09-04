@@ -15,6 +15,8 @@ var oEvent = window.event,
 	oSlowRotorDescLabel = document.getElementById("slow-rotor-desc"),
 	oFourthRotorDescLabel = document.getElementById("fourth-rotor-desc"),
 	oFourthWindow = document.getElementById("window-r4"),
+	oWideReflector = document.getElementById("wide-reflector"),
+	oThinReflector = document.getElementById("thin-reflector"),
 	oReflectorDescLabel = document.getElementById("reflector-desc"),
 	oFreehandModeIndicator = document.getElementById("fh-indicator"),
 	oProtocolModeIndicator = document.getElementById("prtcl-indicator"),
@@ -620,14 +622,20 @@ handleActions = function(oEvent) {
 			
 			case "hide-fourth": //ukryj czwarty wirnik i wirtualne kontakty do niego prowadzące
 				oContactStrips[3].parentElement.setAttribute("isActive", "false");
-				r4.guiElement.setAttribute("isActive", "false");
-				oFourthWindow.setAttribute("isActive", "false");
+				oContactStrips[4].parentElement.setAttribute("mode", "3")
+				r4.guiElement.setAttribute("isactive", "false");
+				oFourthWindow.setAttribute("isactive", "false");
+				oWideReflector.setAttribute("isactive", "true");
+				oThinReflector.setAttribute("isactive", "false");
 			break;
 			
 			case "show-fourth": //pokaż czwarty wirnik i wirtualne kontakty do niego prowadzące
 				oContactStrips[3].parentElement.setAttribute("isActive", "true");
+				oContactStrips[4].parentElement.setAttribute("mode", "4")
 				r4.guiElement.setAttribute("isActive", "true");
 				oFourthWindow.setAttribute("isActive", "true");
+				oWideReflector.setAttribute("isactive", "false");
+				oThinReflector.setAttribute("isactive", "true");
 			break;
 			/*
 			case "translate": //pokaż ekran zachęcający do przetłumaczenia aplikacji
