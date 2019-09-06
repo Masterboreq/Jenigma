@@ -671,7 +671,7 @@ handleActions = function(oEvent) {
 	
 	plugboard.rewire(aPlugSetting);
 	r1.set(0,20);
-	r2.set(0,25);
+	r2.set(0,13);
 	r3.set(0,16);
 	r4.set(5,0);
 

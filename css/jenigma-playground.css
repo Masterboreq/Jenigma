@@ -150,7 +150,7 @@ div.menu-item[lit="yes"] {
 
 .window {
 	position: absolute;
-	top: 190px;
+	top: 189px;
 	width: 56px;
 	height: 46px;
 	border: 2px solid #ff26d0;
@@ -209,6 +209,7 @@ div.menu-item[lit="yes"] {
 	position: absolute;
 	top: 40px;
 	left: 300px;
+	display: none;
 }
 
 #forth {
@@ -230,6 +231,7 @@ div.menu-item[lit="yes"] {
 	position: absolute;
 	top: 40px;
 	left: 120px;
+	display: none;
 }
 
 
@@ -248,12 +250,17 @@ div.menu-item[lit="yes"] {
 }
 
 .rotor {
-	border: 2px solid red;
+	border: 2px solid #d4ae14;
+	background: linear-gradient(0deg, #d4ae14, #ffebbf, #d4ae14);
 	width: 160px;
 	height: 306px;
 	position: absolute;
 	top: 60px;
 	overflow: hidden;
+}
+
+.rotor:hover {
+	border: 2px solid red;
 }
 
 .wide-reflector {
@@ -291,16 +298,18 @@ div.menu-item[lit="yes"] {
 }
  
 .letter-strip {
-	border: 1px solid pink;
+	border: none;
+	background: linear-gradient(0deg, #7b7457, #fdfdfd, #7b7457);
 	width: 50px;
 	height: 316px;
 	position: relative;
 	top: 0px;
-	left: 16px;
+	left: 18px;
 	overflow: hidden;
 }
 
 .contacts {
+	background-color: rgba(243, 222, 185, 0.6); 
 	position: relative;
 	font-size: 9px;
 	line-height: 0.75rem;
@@ -323,7 +332,7 @@ div.menu-item[lit="yes"] {
 }
 
 .contacts-strip {
-	border: 1px solid #555;
+	border: none;
 	width: 30px;
 	height: 310px;
 	position: absolute;
@@ -392,18 +401,37 @@ div.menu-item[lit="yes"] {
 	border-color: aquamarine;
 }
 
-li[lit="no"] {
-	color: #ccc;
+/*
+ul.contacts li[lit="no"] {
+	color: #fe393a;
 	font-weight: normal;
 }
 
-li[lit="red"] {
+ul.contacts li[lit="red"] {
 	color: #ff2f5f;
 	font-weight: bold;
 }
 
+ul.contacts li[lit="green"] {
+	color: #00b900;
+	font-weight: bold;
+}
+*/
+
+li[lit="no"] {
+	color: #2e495d;
+	font-weight: normal;
+}
+
+li[lit="red"] {
+	background-color: #ff2f5f;
+	color: #000;
+	font-weight: bold;
+}
+
 li[lit="green"] {
-	color: #10fb10;
+	background-color: #00b900;
+	color: #fff;
 	font-weight: bold;
 }
  
@@ -416,8 +444,8 @@ ul.indexes {
 }
 
 ul.indexes li {
-	border: 1px solid green;
-	background-color: #fdf483;
+	border: 1px solid #e6ca8d;
+	background-color: #b57e08;
 	display: list-item;
 	text-align: center;
 	overflow: hidden;
